@@ -1,6 +1,7 @@
 version: '3'
 services:
   api:
+    container_name: 'django-api'
     build:
       context: ./src
       dockerfile: Dockerfile
@@ -9,7 +10,9 @@ services:
     image: '${API_IMAGE}'
     command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
     expose:
-      - 80
+      - 8000
+    networks:
+      - webnet
   nginx:
     build:
      context: ./nginx
@@ -17,5 +20,10 @@ services:
      cache_from:
           - '${NGINX_IMAGE}'
     image: '${NGINX_IMAGE}'
+    depends_on: api
     ports:
       - 80:80
+    networks:
+      - webnet
+networks:
+  webnet:
