@@ -20,7 +20,8 @@ services:
      cache_from:
           - '${NGINX_IMAGE}'
     image: '${NGINX_IMAGE}'
-    depends_on: api
+    depends_on: 
+      - api
     ports:
       - 80:80
     networks:
