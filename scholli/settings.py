@@ -121,7 +121,7 @@ WSGI_APPLICATION = 'scholli.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
-if os.getenv('ENV') == 'production':
+if os.getenv('DJANGO_ENV') == 'production':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',

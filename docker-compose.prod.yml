@@ -1,28 +1,66 @@
+# version: '3'
+# services:
+#   api:
+#     container_name: 'api'
+#     image: '${API_IMAGE}'
+#     command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
+#     volumes:
+#       - static_volume:/src/static/
+#     expose:
+#       - 8000
+#     networks:
+#       - webnet
+#   nginx:
+#       container_name: 'nginx'
+#       image: '${NGINX_IMAGE}'
+#       ports:
+#         - 80:80
+#       volumes:
+#         - static_volume:/src/static/
+#       depends_on:
+#         - api
+#       networks:
+#         - webnet
+# volumes:
+#   static_volume:
+
+# networks:
+#   webnet:
+#docker-compose.prod.yml
 version: '3'
 services:
-  api:
-    container_name: 'api'
-    image: '${API_IMAGE}'
-    command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
+
+  web:
+    container_name: web
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000 -t 120
+    environment:
+      DJANGO_SETTINGS_MODULE: scholli.settings
+      DJANGO_ENV: production
+    env_file:
+      - .env.prod
     volumes:
-      - static_volume:/src/static/
+      - static:/home/app/web/static
+      - media:/home/app/web/media
     expose:
       - 8000
-    networks:
-      - webnet
-  nginx:
-      container_name: 'nginx'
-      image: '${NGINX_IMAGE}'
-      ports:
-        - 80:80
-      volumes:
-        - static_volume:/src/static/
-      depends_on:
-        - api
-      networks:
-        - webnet
-volumes:
-  static_volume:
+    entrypoint:
+      - sh
+      - config/docker/entrypoint.prod.sh
 
-networks:
-  webnet:
+  nginx:
+    container_name: nginx
+    build: ./config/nginx
+    volumes:
+      - static:/home/app/web/static
+      - media:/home/app/web/media
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+volumes:
+  static:
+  media:
