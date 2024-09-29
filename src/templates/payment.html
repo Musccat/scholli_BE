@@ -1,0 +1,58 @@
+<!-- templates/payment.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 테스트</title>
+    <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+</head>
+<body>
+    <h1>결제 테스트 페이지</h1>
+    <button onclick="requestPay()">결제하기</button>
+
+    <script>
+        function requestPay() {
+            var IMP = window.IMP; // 아임포트 라이브러리 초기화
+            IMP.init('{{ merchant_code }}'); // 아임포트 가맹점 코드
+
+            IMP.request_pay({
+                pg: 'html5_inicis', // 결제 제공사 
+                pay_method: 'card', // 결제 수단
+                merchant_uid: 'merchant_' + new Date().getTime(), // 임의의 주문 번호
+                name: '테스트 결제',
+                amount: 1, // 결제 금액
+                buyer_email: 'test@example.com',
+                buyer_name: '홍길동',
+                buyer_tel: '010-1234-5678',
+                buyer_addr: '서울특별시 강남구 삼성동',
+                buyer_postcode: '123-456',
+
+            }, function (rsp) { // 결제 후 콜백
+                if (rsp.success) {
+                    // 결제 성공 시 처리할 코드
+                    alert('결제가 완료되었습니다. imp_uid: ' + rsp.imp_uid);
+
+                    // 서버에 결제 정보를 전달 (imp_uid, merchant_uid 등을 서버로 POST 전송)
+                    fetch('/payment/pay/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            imp_uid: rsp.imp_uid,  // 아임포트에서 반환한 고유 결제 ID
+                            merchant_uid: rsp.merchant_uid  // 주문 번호
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+                } else {
+                    alert('결제에 실패하였습니다. 에러 내용: ' + rsp.error_msg);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

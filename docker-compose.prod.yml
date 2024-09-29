@@ -1,0 +1,19 @@
+version: '3'
+services:
+  api:
+    container_name: 'django-api'
+    image: '${API_IMAGE}'
+    command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/src/static/
+    expose:
+      - 80
+  nginx:
+      container_name: 'nginx'
+      image: '${NGINX_IMAGE}'
+      ports:
+        - 80:80
+      volumes:
+        - static_volume:/src/static/
+  volumes:
+    static_volume:
