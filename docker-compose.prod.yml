@@ -1,7 +1,7 @@
 version: '3'
 services:
   api:
-    container_name: 'django-api'
+    container_name: 'api'
     image: '${API_IMAGE}'
     command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
     volumes:
