@@ -7,7 +7,9 @@ services:
     volumes:
       - static_volume:/src/static/
     expose:
-      - 80
+      - 8000
+    networks:
+      - webnet
   nginx:
       container_name: 'nginx'
       image: '${NGINX_IMAGE}'
@@ -15,5 +17,12 @@ services:
         - 80:80
       volumes:
         - static_volume:/src/static/
-  volumes:
-    static_volume:
+      depends_on:
+        - api
+      networks:
+        - webnet
+volumes:
+  static_volume:
+
+networks:
+  webnet:
