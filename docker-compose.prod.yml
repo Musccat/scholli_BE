@@ -38,9 +38,9 @@ services:
     command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000 -t 120
     environment:
       DJANGO_SETTINGS_MODULE: scholli.settings
-      DJANGO_ENV: production
+      ENV: production
     env_file:
-      - .env.prod
+      - .env
     volumes:
       - static:/home/app/web/static
       - media:/home/app/web/media

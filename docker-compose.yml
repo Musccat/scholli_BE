@@ -1,23 +1,42 @@
+# version: '3'
+# services:
+#   api:
+#     build:
+#       context: ./src
+#       dockerfile: Dockerfile
+#     command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
+#     volumes:
+#       - static_volume:/src/static/
+#     expose:
+#       - 80
+#   nginx:
+#     build:
+#       context: ./nginx
+#       dockerfile: Dockerfile
+#     ports:
+#       - 80:80
+#     volumes:
+#       - static_volume:/src/static/
+# volumes:
+#   static_volume:
 version: '3'
 services:
-  api:
+  web:
+    container_name: web
     build:
-      context: ./src
+      context: ./
       dockerfile: Dockerfile
-    command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - static_volume:/src/static/
-    expose:
-      - 80
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000 --settings=scholli.settings"
+    environment:
+      ENV: development
+    env_file:
+      - .env
+    restart: always
     ports:
-      - 80:80
+      - "8000:8000"
     volumes:
-      - static_volume:/src/static/
+      - .:/app
 volumes:
-  static_volume:
-  
+  app:
+  dbdata:
 

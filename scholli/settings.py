@@ -15,6 +15,7 @@ import os, json
 from datetime import timedelta
 from django.core.exceptions import ImproperlyConfigured
 from celery.schedules import crontab
+import environ
 
 AUTH_USER_MODEL = "users.User"
 
@@ -24,36 +25,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #Template 파일 경로
 TEMPLATES_DIR = BASE_DIR/"templates"
 
-secret_file = os.path.join(BASE_DIR, 'secret.json')
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
-
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
 # OPENAI API 키 
-OPENAI_API_KEY = get_secret("OPENAI_API_KEY")
+OPENAI_API_KEY = env("OPENAI_API_KEY")
 
 
 # 아임포트
-IMP_KEY = get_secret("IMP_KEY")
-IMP_SECRET = get_secret("IMP_SECRET")
-MERCHANT_CODE = get_secret("MERCHANT_CODE")
+IMP_KEY = env("IMP_KEY")
+IMP_SECRET = env("IMP_SECRET")
+MERCHANT_CODE = env("MERCHANT_CODE")
 
 # Celery 설정
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis 브로커 설정
@@ -125,11 +120,11 @@ if os.getenv('DJANGO_ENV') == 'production':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': get_secret("DATABASE_NAME"),
-            'USER': get_secret("DATABASE_USER"),
-            'PASSWORD': get_secret("DATABASE_PASSWORD"),
-            'HOST': get_secret("DATABASE_HOST"),
-            'PORT': get_secret("DATABASE_PORT"),
+            'NAME': env("DATABASE_NAME"),
+            'USER': env("DATABASE_USER"),
+            'PASSWORD': env("DATABASE_PASSWORD"),
+            'HOST': env("DATABASE_HOST"),
+            'PORT': env("DATABASE_PORT"),
         }
     }
 else:
@@ -202,7 +197,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
 
-    'ALGORITHM': get_secret("JWT_ALGORITHM"),
+    'ALGORITHM': env("JWT_ALGORITHM"),
 
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
@@ -245,7 +240,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = get_secret("EMAIL_HOST")
-EMAIL_HOST_PASSWORD = get_secret("EMAIL_PASSWORD")
+EMAIL_HOST_USER = env("EMAIL_HOST")
+EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
