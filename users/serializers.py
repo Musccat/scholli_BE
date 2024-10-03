@@ -61,13 +61,3 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
 class VerifyCodeSerializer(serializers.Serializer):
     email = serializers.EmailField()
     verification_code = serializers.CharField(max_length=6)
-
-    def validate(self, data):
-        try:
-            verification = EmailVerification.objects.get(email=data['email'])
-        except EmailVerification.DoesNotExist:
-            raise serializers.ValidationError("Invalid email address.")
-
-        if verification.verification_code != data['verification_code']:
-            raise serializers.ValidationError("Invalid verification code.")
-        return data

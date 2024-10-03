@@ -133,6 +133,19 @@ class VerifyCodeView(APIView):
     def post(self, request):
         serializer = VerifyCodeSerializer(data=request.data)
         if serializer.is_valid():
-            # 인증번호 검증을 위한 로직만 남깁니다.
-            return Response({"valid": True}, status=status.HTTP_200_OK)
+            email = serializer.validated_data['email']
+            entered_code = serializer.validated_data['verify_code']
+
+            try:
+                # 이메일로 저장된 인증번호 가져오기
+                verification = EmailVerification.objects.get(email=email)
+
+                # 인증번호 유효성 검사
+                if verification.verification_code == entered_code and verification.is_code_valid():
+                    return Response({"valid": True}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"valid": False, "message": "Invalid or expired verification code."}, status=status.HTTP_400_BAD_REQUEST)
+            except EmailVerification.DoesNotExist:
+                return Response({"valid": False, "message": "No verification code found for this email."}, status=status.HTTP_404_NOT_FOUND)
+
         return Response({"valid": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
