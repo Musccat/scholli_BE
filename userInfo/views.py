@@ -1,9 +1,10 @@
 from rest_framework import generics, permissions, status
 from .models import Profile, Wishlist
 from scholarships.models import Scholarship
-from .serializers import ProfileSerializer, WishlistSerializer, UserInfoScholarshipSerializer
+from .serializers import ProfileSerializer, WishlistSerializer, UserInfoScholarshipSerializer, RecommendResultSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from .models import RecommendResult
 from .utils import filter_scholarships_by_date, filter_basic, gpt_filter_region, recommend_scholarships,  separate_scholarships
 from rest_framework.exceptions import ValidationError, NotFound 
 from django.utils.dateparse import parse_date
@@ -87,7 +88,7 @@ class RecommendScholarshipsView(generics.GenericAPIView):
             current_date = datetime.strptime(current_date_input, "%Y-%m-%d")
         except ValueError:
             return Response({"error": "잘못된 날짜 형식입니다. YYYY-MM-DD 형식으로 입력하세요."}, status=status.HTTP_400_BAD_REQUEST)
-
+        
         # 1. 모집 날짜 필터링
         scholarships = Scholarship.objects.all()
         scholarships = filter_scholarships_by_date(current_date, scholarships)
@@ -121,10 +122,30 @@ class RecommendScholarshipsView(generics.GenericAPIView):
 
         # 최종 필터링된 장학금 반환
         final_scholarships = final_scholarships.filter(product_id__in=recommended_ids)
+
+        # 7. 추천된 장학금을 DB에 저장
+        for scholarship in final_scholarships:
+            # 이미 저장된 추천 기록이 있는지 확인
+            recommended_scholarship, created = RecommendResult.objects.get_or_create(
+                user=user_profile.username,
+                scholarship=scholarship,
+                product_id=scholarship.product_id
+            )
+            if created:
+                print(f"장학금 {scholarship.name}이(가) {user_profile.username}에게 추천되었습니다.")
+
         serializer = self.get_serializer(final_scholarships, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
 
+class RecommendScholarListView(generics.ListAPIView):
+    serializer_class = RecommendResultSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user_profile = Profile.objects.get(username=self.request.user)
+        user = user_profile.username
+        return RecommendResult.objects.filter(user=user_profile.username)
+    
 class RecommendScholarshipsDetail(generics.RetrieveAPIView):
     queryset = Scholarship.objects.all()
     serializer_class = UserInfoScholarshipSerializer

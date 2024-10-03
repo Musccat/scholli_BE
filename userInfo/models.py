@@ -42,3 +42,13 @@ class Wishlist(models.Model):
         ]
     def __str__(self):
         return f"{self.user.username}의 관심 목록 - {self.scholarship.name}"
+    
+
+class RecommendResult(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recommended_scholarships')
+    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
+    product_id = models.CharField(max_length=50, null=True, blank=True, default='unknown')
+    recommended_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}에게 추천된 {self.scholarship.name}"

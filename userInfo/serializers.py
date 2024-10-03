@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile, Wishlist
+from .models import Profile, Wishlist, RecommendResult
 from users.models import User
 from scholarships.models import Scholarship
 
@@ -40,3 +40,12 @@ class UserInfoScholarshipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scholarship
         fields = '__all__'
+
+class RecommendResultSerializer(serializers.ModelSerializer):
+    # Scholarship의 전체 정보를 반환하기 위해 scholarship 필드를 UserInfoScholarshipSerializer로 변경
+    scholarship = UserInfoScholarshipSerializer(read_only=True)
+    product_id = serializers.CharField(source='scholarship.product_id', read_only=True)
+
+    class Meta:
+        model = RecommendResult
+        fields = ['scholarship', 'product_id', 'recommended_at']
