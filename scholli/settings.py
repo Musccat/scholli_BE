@@ -93,6 +93,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'scholli.urls'
 
+CSRF_TRUSTED_ORIGINS = ['https://scholli.site', 'https://www.scholli.site']
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
