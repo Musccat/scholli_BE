@@ -1,42 +1,47 @@
-# version: '3'
-# services:
-#   api:
-#     build:
-#       context: ./src
-#       dockerfile: Dockerfile
-#     command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000
-#     volumes:
-#       - static_volume:/src/static/
-#     expose:
-#       - 80
-#   nginx:
-#     build:
-#       context: ./nginx
-#       dockerfile: Dockerfile
-#     ports:
-#       - 80:80
-#     volumes:
-#       - static_volume:/src/static/
-# volumes:
-#   static_volume:
-version: '3'
+version: "3.8"
 services:
+
   web:
     container_name: web
     build:
       context: ./
-      dockerfile: Dockerfile
-    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000 --settings=scholli.settings"
+      dockerfile: Dockerfile.prod
+    command: gunicorn scholli.wsgi:application --bind 0.0.0.0:8000 -t 120
     environment:
-      ENV: development
+      DJANGO_SETTINGS_MODULE: scholli.settings
+      DJANGO_ENV: production
     env_file:
       - .env
-    restart: always
-    ports:
-      - "8000:8000"
     volumes:
-      - .:/app
-volumes:
-  app:
-  dbdata:
+      - static:/home/app/web/static
+      - media:/home/app/web/media
+    expose:
+      - 8000
+    entrypoint:
+      - sh
+      - config/docker/entrypoint.prod.sh
 
+  nginx:
+    container_name: nginx
+    build: ./config/nginx
+    volumes:
+      - static:/home/app/web/static
+      - media:/home/app/web/media
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  static:
+  media:
