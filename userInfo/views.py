@@ -1,10 +1,15 @@
 from rest_framework import generics, permissions, status
 from .models import Profile, Wishlist
 from scholarships.models import Scholarship
-from .serializers import ProfileSerializer, WishlistSerializer
+from .serializers import ProfileSerializer, WishlistSerializer, UserInfoScholarshipSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
+from .utils import filter_scholarships_by_date, filter_basic, gpt_filter_region, recommend_scholarships,  separate_scholarships
+from rest_framework.exceptions import ValidationError, NotFound 
+from django.utils.dateparse import parse_date
+from datetime import datetime  
+import openai
+import re
 
 class ProfileCreateView(generics.CreateAPIView):
     queryset = Profile.objects.all()
@@ -64,3 +69,71 @@ class WishlistListView(generics.ListAPIView):
     def get_queryset(self):
         return Wishlist.objects.filter(user=self.request.user)
 
+# 장학금 추천 뷰 (POST 요청으로 날짜를 받아 처리)
+class RecommendScholarshipsView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserInfoScholarshipSerializer
+
+    def post(self, request):
+        # 현재 로그인된 사용자 프로필
+        user_profile = Profile.objects.get(username=self.request.user)
+
+        # 클라이언트에서 POST로 받은 날짜
+        current_date_input = request.data.get('date')
+        if not current_date_input:
+            return Response({"error": "날짜를 입력해 주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            current_date = datetime.strptime(current_date_input, "%Y-%m-%d")
+        except ValueError:
+            return Response({"error": "잘못된 날짜 형식입니다. YYYY-MM-DD 형식으로 입력하세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 1. 모집 날짜 필터링
+        scholarships = Scholarship.objects.all()
+        scholarships = filter_scholarships_by_date(current_date, scholarships)
+        print(f"1. 모집 날짜 필터링 결과 개수: {scholarships.count()}")
+
+        # 2. 대학, 학과, 학년 구분 필터링
+        scholarships = filter_basic(scholarships, user_profile)
+        print(f"2. 대학, 학과, 학년 필터링 결과 개수: {scholarships.count()}")
+
+        # 3. 장학금 분리 (해당없음 vs. 해당없음이 아닌 장학금)
+        no_criteria_scholarships, criteria_scholarships = separate_scholarships(scholarships)
+        print(f"해당없음 장학금 개수: {no_criteria_scholarships.count()}")
+        print(f"해당없음이 아닌 장학금 개수: {criteria_scholarships.count()}")
+
+        # 4. GPT로 지역 필터링
+        filtered_ids = gpt_filter_region(user_profile, criteria_scholarships)
+        print(f"3. GPT로 지역 필터링 결과 ID 개수: {len(filtered_ids)}")
+
+        # 5. GPT로 필터링된 장학금과 '해당없음' 장학금 합치기
+        filtered_scholarships = criteria_scholarships.filter(product_id__in=filtered_ids)
+        final_scholarships = filtered_scholarships | no_criteria_scholarships
+        print(f"합친 개수: {final_scholarships.count()}")
+        print(f"필터링된 장학금: {filtered_scholarships.count()}")
+        print(f"해당없음 장학금: {no_criteria_scholarships.count()}")
+        print(f"합친 장학금: {[s.product_id for s in final_scholarships]}")
+
+        # 6. GPT로 나머지 조건 필터링 및 추천
+        recommended_ids = recommend_scholarships(user_profile, final_scholarships)
+        print(f"4. GPT 추천 결과 ID 개수: {len(recommended_ids)}")
+        print(f"GPT 추천 결과 IDs: {recommended_ids}")
+
+        # 최종 필터링된 장학금 반환
+        final_scholarships = final_scholarships.filter(product_id__in=recommended_ids)
+        serializer = self.get_serializer(final_scholarships, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class RecommendScholarshipsDetail(generics.RetrieveAPIView):
+    queryset = Scholarship.objects.all()
+    serializer_class = UserInfoScholarshipSerializer
+    permission_classes = [IsAuthenticated]
+
+    # product_id를 기준으로 장학금 찾기
+    def get_object(self):
+        product_id = self.kwargs['product_id']
+        try:
+            return Scholarship.objects.get(product_id=product_id)
+        except Scholarship.DoesNotExist:
+            raise NotFound("해당 장학금을 찾을 수 없습니다.")

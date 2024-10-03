@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Profile, Wishlist
 from users.models import User
+from scholarships.models import Scholarship
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
@@ -35,3 +36,7 @@ class WishlistSerializer(serializers.ModelSerializer):
         fields = ['user', 'scholarship_id', 'added_at']
         read_only_fields = ['user','added_at']
 
+class UserInfoScholarshipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scholarship
+        fields = '__all__'

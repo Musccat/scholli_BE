@@ -6,17 +6,17 @@ class Profile(models.Model):
     
     SEMESTER_CATEGORIES = [
         ('대학신입생', '대학신입생'),
-        ('2학기', '2학기'),
-        ('3학기', '3학기'),
-        ('4학기', '4학기'),
-        ('5학기', '5학기'),
-        ('6학기', '6학기'),
-        ('7학기', '7학기'),
-        ('대학 8학기이상', '대학 8학기이상'),
+        ('대학2학기', '대학2학기'),
+        ('대학3학기', '대학3학기'),
+        ('대학4학기', '대학4학기'),
+        ('대학5학기', '대학5학기'),
+        ('대학6학기', '대학6학기'),
+        ('대학7학기', '대학7학기'),
+        ('대학8학기이상', '대학8학기이상'),
     ]
 
     username = models.OneToOneField(User, on_delete=models.CASCADE, db_column='username', to_field='username')
-    univ_category = models.CharField(max_length=50, choices=[('4년제(5~6년제)', '4년제(5~6년제)'), ('전문대(2~3년제)', '전문대(2~3년제)'), ('해외대학', '해외대학'), ('학점은행제 대학', '학점은행제 대학'), ('원격대학', '원격대학'), ('기술대학', '기술대학')], default='4년제(5~6년제)')
+    univ_category = models.CharField(max_length=50, choices=[('4년제(5~6년제포함)', '4년제(5~6년제포함)'), ('전문대(2~3년제)', '전문대(2~3년제)'), ('해외대학', '해외대학'), ('학점은행제 대학', '학점은행제 대학'), ('원격대학', '원격대학'), ('기술대학', '기술대학')], default='4년제(5~6년제포함)')
     gender = models.CharField(max_length=10, choices=[('남성', '남성'), ('여성', '여성'), ('선택안함', '선택안함')], default='선택안함')
     age = models.SmallIntegerField()
     university = models.CharField(max_length=100)
