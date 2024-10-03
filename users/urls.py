@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views 
-from users.views import ProfileView, SendVerificationCodeView, VerifyCodeView
+from users.views import ProfileView, SendVerificationCodeView, VerifyCodeView, CheckUsernameAvailability
 from rest_framework import routers
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
