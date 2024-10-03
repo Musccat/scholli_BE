@@ -23,7 +23,7 @@ class EmailVerification(models.Model):
         self.expiration_time = datetime.now() + timedelta(minutes=2)
         self.save()
 
-     def is_code_valid(self):
+    def is_code_valid(self):
         # 현재 시간이 만료 시간 이전이면 True, 아니면 False
         return datetime.now() < self.expiration_time
 
