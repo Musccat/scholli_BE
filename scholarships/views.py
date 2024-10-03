@@ -11,6 +11,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 import openai
 from django.conf import settings 
 from .utils import extract_key_points_from_tips  # 공통 유틸리티 함수 불러오기
+from django.db.models import IntegerField
+from django.db.models.functions import Cast
 
 # 장학금 목록
 class ScholarshipList(generics.ListAPIView):
