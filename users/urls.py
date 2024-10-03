@@ -22,4 +22,5 @@ urlpatterns = [
     path('mypage/update', ProfileView.as_view()),
     path('send-verification-code/', SendVerificationCodeView.as_view()),
     path('verify-code/', VerifyCodeView.as_view()),
+    path('check-username/<str:username>/', CheckUsernameAvailability.as_view(), name='check_username'),
 ]

@@ -38,6 +38,14 @@ class AthntCodeCreateView(APIView):
         #message.send()
         #return Response({"message":"이메일을 보냈습니다."}, status=status.HTTP_200_OK)
 
+#아이디 중복 검사
+class CheckUsernameAvailability(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, username):
+        # 'username' 파라미터로 받은 값이 User 모델에 존재하는지 확인
+        is_available = not User.objects.filter(username=username).exists()
+        return Response({'available': is_available}, status=status.HTTP_200_OK)
+
 #사용자 등록
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
