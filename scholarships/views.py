@@ -77,8 +77,10 @@ class ScholarshipCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]  # 로그인한 사용자만 접근 가능
 
     def perform_create(self, serializer):
-        # 기존 장학금 중 가장 큰 product_id를 가져옴
-        last_scholarship = Scholarship.objects.order_by('product_id').last()
+        # product_id를 숫자형으로 캐스팅하여 가장 큰 값을 찾음
+        last_scholarship = Scholarship.objects.annotate(
+            product_id_as_int=Cast('product_id', IntegerField())
+        ).order_by('-product_id_as_int').first()
         
         if last_scholarship and last_scholarship.product_id.isdigit():
             # 가장 마지막 product_id의 숫자에 1을 더해 새로운 product_id를 생성
