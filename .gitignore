@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/venv,python,django,windows,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv,python,django,windows,macos
 
+
 secret.json
 .env
 
