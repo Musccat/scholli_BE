@@ -18,26 +18,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
     permission_classes = (AllowAny,)
     serializer_class = MyTokenObtainPairSerializer
 
-#인증코드 생성 & 이메일 발송
-class AthntCodeCreateView(APIView):
-    def post(self, request):
-        email = request.data.get("email", "")
-        if User.objects.filter(email=email).exists:
-            return Response(
-                {"message":"이미 가입된 이메일입니다."}, status=status.HTTP_400_BAD_REQUEST
-            )
-        #athnt_code = str(randint(1, 999999)).zfill(6)
-        #message = EmailMessage(
-            #"SCHOLLI [Verification Code]",
-            #f"인증코드 [{athnt_code}]",
-            #"",
-            #[email],
-        #)
-        #authen_Code = Verify(email=email, athnt_code=athnt_code)
-        #authen_Code.save()
-        #message.send()
-        #return Response({"message":"이메일을 보냈습니다."}, status=status.HTTP_200_OK)
-
 #아이디 중복 검사
 class CheckUsernameAvailability(APIView):
     permission_classes = [AllowAny]
