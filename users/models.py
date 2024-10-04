@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from datetime import date, timedelta, datetime
 import random, string
+from django.utils import timezone
 
 
 
