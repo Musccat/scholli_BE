@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from datetime import date, timedelta, datetime
 import random, string
-from django.utils import timezone
+
 
 
 class User(AbstractUser):
@@ -17,7 +17,7 @@ class User(AbstractUser):
 class EmailVerification(models.Model):
     email = models.EmailField(unique=True)
     verification_code = models.CharField(max_length=6)
-    created_at = models.DateTimeField(auto_now_add=True, default=timezone.now)  # 인증번호 생성 시간 추가
+    created_at = models.DateTimeField(auto_now_add=True)  # 인증번호 생성 시간 추가
     expiration_time = models.DateTimeField()  # 인증번호 만료 시간
 
     def generate_verification_code(self):
