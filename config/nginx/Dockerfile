@@ -1,6 +1,9 @@
 # Nginx의 기본 Ubuntu 이미지 사용
 FROM nginx:latest
 
+# Build-time argument로 MAXMIND_LICENSE_KEY를 받음
+ARG MAXMIND_LICENSE_KEY
+
 # 기본 설정 파일 삭제
 RUN rm /etc/nginx/conf.d/default.conf
 
