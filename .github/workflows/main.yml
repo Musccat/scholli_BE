@@ -43,6 +43,4 @@ jobs:
         username: ubuntu
         key: ${{ secrets.KEY }}
         script: |
-          # 원격 서버에 환경 변수 설정
-          export MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }}
           sh /home/ubuntu/srv/ubuntu/config/scripts/deploy.sh
