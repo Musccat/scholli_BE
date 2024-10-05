@@ -41,12 +41,12 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl-dev
 
-# 3. Nginx 소스 다운로드 및 컴파일
+# Nginx 소스 다운로드 및 GeoIP 모듈을 포함하여 컴파일
 WORKDIR /usr/src
 RUN wget http://nginx.org/download/nginx-1.22.1.tar.gz && \
     tar -zxvf nginx-1.22.1.tar.gz && \
     cd nginx-1.22.1 && \
-    ./configure --with-http_geoip_module && \
+    ./configure --with-http_geoip_module --prefix=/etc/nginx && \
     make && \
     make install
 
