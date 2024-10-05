@@ -50,9 +50,11 @@ RUN wget http://nginx.org/download/nginx-1.22.1.tar.gz && \
     make && \
     make install
 
-# 4. GeoIP Legacy 데이터 다운로드 및 압축 해제
+# GeoIP Legacy 데이터 다운로드 및 압축 해제
+# 압축 해제 시 기존 파일이 있으면 삭제 후 덮어쓰는 방식으로 수정
 RUN mkdir -p /usr/share/GeoIP && \
     wget https://centminmod.com/centminmodparts/geoip-legacy/GeoIP.dat.gz -O /usr/share/GeoIP/GeoIP.dat.gz && \
+    rm -f /usr/share/GeoIP/GeoIP.dat && \
     gunzip /usr/share/GeoIP/GeoIP.dat.gz
 
 
