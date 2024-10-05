@@ -4,11 +4,7 @@ FROM nginx:latest
 # 기본 설정 파일 삭제
 RUN rm /etc/nginx/conf.d/default.conf
 
-# 필요한 패키지 설치 (python3, wget, git 등)
-RUN apt-get update && apt-get install -y \
-    libnginx-mod-http-geoip \
-    geoip-database \
-    wget
+
 
 # # 가상 환경 생성 및 활성화
 # RUN python3 -m venv /opt/venv
@@ -30,10 +26,35 @@ RUN apt-get update && apt-get install -y \
 # # 변환된 GeoIP.dat 파일을 Nginx가 사용할 수 있는 디렉터리로 이동
 # RUN mv ./maxmind-geo/GeoIP.dat /usr/share/GeoIP/GeoIP.dat
 
-# GeoIP Legacy 데이터 다운로드 및 압축 해제
+RUN apt-get update && apt-get install -y \
+    wget \
+    build-essential \
+    libpcre3 \
+    libpcre3-dev \
+    zlib1g-dev \
+    libssl-dev \
+    libgeoip-dev \
+    geoip-database \
+    unzip \
+    curl \
+    gnupg2 \
+    ca-certificates \
+    libssl-dev
+
+# 3. Nginx 소스 다운로드 및 컴파일
+WORKDIR /usr/src
+RUN wget http://nginx.org/download/nginx-1.22.1.tar.gz && \
+    tar -zxvf nginx-1.22.1.tar.gz && \
+    cd nginx-1.22.1 && \
+    ./configure --with-http_geoip_module && \
+    make && \
+    make install
+
+# 4. GeoIP Legacy 데이터 다운로드 및 압축 해제
 RUN mkdir -p /usr/share/GeoIP && \
     wget https://centminmod.com/centminmodparts/geoip-legacy/GeoIP.dat.gz -O /usr/share/GeoIP/GeoIP.dat.gz && \
     gunzip /usr/share/GeoIP/GeoIP.dat.gz
+
 
 # Nginx 설정 파일 복사
 COPY nginx.conf /etc/nginx/conf.d
