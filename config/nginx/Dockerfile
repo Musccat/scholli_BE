@@ -59,7 +59,7 @@ RUN mkdir -p /usr/share/GeoIP && \
 
 
 # Nginx 설정 파일 복사
-COPY nginx.conf /etc/nginx/conf.d
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 기본 명령 실행
 #CMD ["nginx", "-g", "daemon off;"]
