@@ -23,5 +23,9 @@ then
   sudo chmod +x /usr/local/bin/docker-compose
 fi
 
-echo "start docker-compose up: ubuntu"
+# 환경 변수를 --build-arg로 전달
+sudo docker-compose -f /home/ubuntu/srv/ubuntu/docker-compose.yml build --build-arg MAXMIND_LICENSE_KEY=$MAXMIND_LICENSE_KEY
+
+# echo "start docker-compose up: ubuntu"
 sudo docker-compose -f /home/ubuntu/srv/ubuntu/docker-compose.yml up --build -d
+
