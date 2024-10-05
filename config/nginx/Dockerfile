@@ -15,11 +15,10 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 # GeoIP 관련 패키지 설치
 RUN apk add --no-cache \
-    libmaxminddb \
+    libnginx-mod-http-geoip \
     geoip \
     geoip-dev \
     geoip-database \
-    geoipupdate \
     && mkdir -p /usr/share/GeoIP \
     && geoipupdate
 
