@@ -23,9 +23,10 @@ services:
 
   nginx:
     container_name: nginx
-    build: ./config/nginx
-    environment:
-      - MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }}
+    build: 
+      context: ./config/nginx
+      args:
+        MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY}
     volumes:
       - static:/home/app/web/static
       - media:/home/app/web/media
