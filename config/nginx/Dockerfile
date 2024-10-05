@@ -15,10 +15,10 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 # 필요한 패키지 설치 (python-pip, wget, git 등)
 RUN apt-get update && apt-get install -y \
-    python-pip \
+    python3-pip \
     wget \
     git \
-    && pip install pygeoip ipaddr
+    && pip3 install pygeoip ipaddr
 
 # GeoLite2 데이터베이스 변환 스크립트 설치
 RUN git clone https://github.com/sherpya/geolite2legacy /opt/geolite2legacy
