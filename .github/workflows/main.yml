@@ -16,9 +16,10 @@ jobs:
 
     - name: debug secrets
       run: |
-        echo "${{ secrets.ENV_VARS }}" | while IFS= read -r line; do
+        echo "${{ secrets.ENV_VARS }}" | sed 's/)/\\)/g; s/(/\\(/g' | while IFS= read -r line; do
           echo "First 2 characters of line: ${line:0:2}"
         done
+
 
     - name: create env file
       run: |
