@@ -62,4 +62,4 @@ RUN mkdir -p /usr/share/GeoIP && \
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # 기본 명령 실행
-#CMD ["nginx", "-g", "daemon off;"]
+ CMD ["nginx", "-g", "daemon off;"]
