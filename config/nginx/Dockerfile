@@ -8,16 +8,14 @@
 # EXPOSE 80
 
 # nginx/Dockerfile
-FROM nginx:alpine
+FROM nginx:latest
 
 # 기본 설정 파일 삭제 (*)
 RUN rm /etc/nginx/conf.d/default.conf
 
-# GeoIP 관련 패키지 설치
-RUN apk add --no-cache \
+# GeoIP 모듈 및 GeoIP 데이터베이스 설치
+RUN apt-get update && apt-get install -y \
     libnginx-mod-http-geoip \
-    geoip \
-    geoip-dev \
     geoip-database \
     && mkdir -p /usr/share/GeoIP \
     && geoipupdate
