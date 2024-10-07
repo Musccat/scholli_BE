@@ -33,19 +33,19 @@ class ProfileUpdateView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         try:
             # 현재 로그인된 사용자의 프로필을 반환
-            return Profile.objects.get(username=self.request.user.username)
+            return Profile.objects.get(user=self.request.user)
         except Profile.DoesNotExist:
-            return None
+            return Profile.objects.create(user=self.request.user)
     
-    def perform_create(self, serializer):
-        birth_date = self.request.user.birth
-        age = calculate_age(birth_date)
-        serializer.save(username=self.request.user.username, age=age)
+    # def perform_create(self, serializer):
+    #     birth_date = self.request.user.birth
+    #     age = calculate_age(birth_date)
+    #     serializer.save(username=self.request.user.username, age=age)
     
     def perform_update(self, serializer):
         birth_date = self.request.user.birth
         age = calculate_age(birth_date)
-        serializer.save(username=self.request.user.username, age=age)
+        serializer.save(age=age)
     
 
 # 찜 추가
