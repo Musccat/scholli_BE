@@ -10,8 +10,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class ReviewList(APIView):
-    permission_classes = (AllowAny,)
-
     def get(self, request, product_id):
         try:
             # product_id를 기반으로 해당 장학금을 찾음

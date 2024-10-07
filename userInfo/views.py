@@ -11,6 +11,7 @@ from django.utils.dateparse import parse_date
 from datetime import datetime  
 import openai
 import re
+from django.core.exceptions import ObjectDoesNotExist
 
 class ProfileCreateView(generics.CreateAPIView):
     queryset = Profile.objects.all()
@@ -25,8 +26,17 @@ class ProfileUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        # 현재 로그인된 사용자의 프로필을 반환
-        return Profile.objects.get(username=self.request.user)
+        try:
+            # 현재 로그인된 사용자의 프로필을 반환
+            return Profile.objects.get(username=self.request.user)
+        except Profile.DoesNotExist:
+            return None
+    
+    def perform_create(self, serializer):
+        serializer.save(username=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save()
     
 
 # 찜 추가
