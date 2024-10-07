@@ -8,10 +8,15 @@ from .models import RecommendResult
 from .utils import filter_scholarships_by_date, filter_basic, gpt_filter_region, recommend_scholarships,  separate_scholarships
 from rest_framework.exceptions import ValidationError, NotFound 
 from django.utils.dateparse import parse_date
-from datetime import datetime  
+from datetime import datetime, date
 import openai
 import re
 from django.core.exceptions import ObjectDoesNotExist
+
+def calculate_age(birth_date):
+    today = date.today()
+    age = today.year-birth_date.year-((today.month, today.day)<(birth_Date.month, birth_date.day))
+    return age
 
 class ProfileCreateView(generics.CreateAPIView):
     queryset = Profile.objects.all()
@@ -33,10 +38,14 @@ class ProfileUpdateView(generics.RetrieveUpdateAPIView):
             return None
     
     def perform_create(self, serializer):
-        serializer.save(username=self.request.user)
+        birth_date = self.request.user.birth
+        age = calculate_age(birth_date)
+        serializer.save(username=self.request.user.username, age=age)
     
     def perform_update(self, serializer):
-        serializer.save()
+        birth_date = self.request.user.birth
+        age = calculate_age(birth_date)
+        serializer.save(username=self.request.user.username, age=age)
     
 
 # 찜 추가
