@@ -10,12 +10,18 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class ReviewList(APIView):
-    permission_classes = (AllowAny,)
+    def get(self, request, product_id):
+        try:
+            # product_id를 기반으로 해당 장학금을 찾음
+            scholarship = Scholarship.objects.get(product_id=product_id)
+        except Scholarship.DoesNotExist:
+            # 장학금을 찾을 수 없는 경우 예외 처리
+            raise Http404("해당 장학금을 찾을 수 없습니다.")
 
-    def get(self, request, pk):
-        scholarship = Scholarship.objects.get(product_id=pk)
+        # 해당 장학금에 대한 리뷰들을 불러옴
         reviews = Review.objects.filter(scholarship=scholarship).order_by("-id")
 
+        # ReviewSerializer를 사용하여 데이터를 직렬화
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data)
     
