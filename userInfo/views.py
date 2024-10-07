@@ -45,7 +45,7 @@ class ProfileUpdateView(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         birth_date = self.request.user.birth
         age = calculate_age(birth_date)
-        serializer.save(age=age)
+        serializer.save(user=self.request.user, age=age)
     
 
 # 찜 추가

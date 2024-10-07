@@ -15,7 +15,7 @@ class Profile(models.Model):
         ('대학8학기이상', '대학8학기이상'),
     ]
 
-    username = models.OneToOneField(User, on_delete=models.CASCADE, db_column='username', to_field='username')
+    user = models.OneToOneField(User, on_delete=models.CASCADE) 
     univ_category = models.CharField(max_length=255, choices=[('4년제(5~6년제포함)', '4년제(5~6년제포함)'), ('전문대(2~3년제)', '전문대(2~3년제)'), ('해외대학', '해외대학'), ('학점은행제 대학', '학점은행제 대학'), ('원격대학', '원격대학'), ('기술대학', '기술대학')], default='4년제(5~6년제포함)')
     gender = models.CharField(max_length=10, choices=[('남성', '남성'), ('여성', '여성'), ('선택안함', '선택안함')], default='선택안함')
     age = models.SmallIntegerField()

@@ -4,7 +4,7 @@ from users.models import User
 from scholarships.models import Scholarship
 
 class ProfileSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=False)
+    username = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all(), required=False)
     age = serializers.IntegerField(required=False)
 
     class Meta:
