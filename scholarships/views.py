@@ -54,9 +54,11 @@ class ScholarshipDetail(generics.RetrieveAPIView):
             tips = f"합격 팁: {advice_tips}\n면접 팁: {interview_tips}"
             gpt_tips = extract_key_points_from_tips(tips)
 
+            print("GPT 응답: " + gpt_tips)
+
             # 추출된 팁을 저장
             success_tips = gpt_tips.split("면접 팁:")[0].strip()
-            interview_tips = gpt_tips.split("면접 팁:")[1].strip()
+            interview_tips = "면접 팁:\n" + gpt_tips.split("면접 팁:")[1].strip()
 
             # 팁을 모델에 저장
             scholarship.gpt_success_tips = success_tips
