@@ -14,9 +14,12 @@ import re
 from django.core.exceptions import ObjectDoesNotExist
 
 def calculate_age(birth_date):
-    today = date.today()
-    age = today.year-birth_date.year-((today.month, today.day)<(birth_Date.month, birth_date.day))
-    return age
+    if birth_date:
+        today = date.today()
+        age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+        return age
+    else:
+        return 0
 
 class ProfileCreateView(generics.CreateAPIView):
     queryset = Profile.objects.all()
@@ -35,7 +38,7 @@ class ProfileUpdateView(generics.RetrieveUpdateAPIView):
             # 현재 로그인된 사용자의 프로필을 반환
             return Profile.objects.get(user=self.request.user)
         except Profile.DoesNotExist:
-            return Profile.objects.create(user=self.request.user)
+            return Profile.objects.create(user=self.request.user, age = calculate_age(self.request.user.birth))
     
     # def perform_create(self, serializer):
     #     birth_date = self.request.user.birth
