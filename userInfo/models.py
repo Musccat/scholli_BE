@@ -23,7 +23,7 @@ class Profile(models.Model):
     semester = models.CharField(max_length=10, choices=SEMESTER_CATEGORIES, null=True)
     major_category = models.CharField(max_length=50, choices=[('공학계열', '공학계열'), ('교육계열', '교육계열'), ('사회계열', '사회계열'), ('예체능계열', '예체능계열'), ('의약계열', '의약계열'), ('인문계열', '인문계열'), ('자연계열', '자연계열')])
     major = models.CharField(max_length=100)
-    totalGPA = models.DecimalField(max_digits=3, decimal_places=2) 
+    totalGPA = models.CharField(max_length=10)
     income = models.PositiveIntegerField()
     residence = models.CharField(max_length=100)
     etc = models.TextField(blank=True, null=True)  # 기타 사항
