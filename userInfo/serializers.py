@@ -5,6 +5,7 @@ from scholarships.models import Scholarship
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all(), required=False)
+    nickname = serializers.SerializerMethodField()  # User 모델의 nickname을 가져오기 위한 필드
     age = serializers.IntegerField(required=False)
 
     class Meta:
@@ -15,8 +16,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             'income', 'residence', 'etc'
         ]
 
-    # def get_nickname(self, obj):
-    #     return obj.username.nickname
+    # User 모델의 nickname을 가져오는 메서드
+    def get_nickname(self, obj):
+        return obj.user.nickname if obj.user else None
     
     def create(self, validated_data):
         validated_data['username'] = self.context['request'].user.username
