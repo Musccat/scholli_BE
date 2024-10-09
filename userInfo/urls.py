@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (ProfileCreateView, ProfileUpdateView, 
                     WishlistCreateView, WishlistDeleteView, WishlistListView, 
-                    RecommendScholarshipsView, RecommendScholarshipsDetail, RecommendScholarListView)
+                    RecommendScholarshipsView, RecommendScholarshipsDetail, RecommendScholarListView, AllInfoView)
 
 urlpatterns = [
     path('profile/create/', ProfileCreateView.as_view(), name='profile-create'),  # 프로필 생성
@@ -11,5 +11,6 @@ urlpatterns = [
     path('wishlist/', WishlistListView.as_view(), name='wishlist-list'),  # 찜 목록 조회
     path('scholarships/recommend/', RecommendScholarshipsView.as_view(), name='scholarship-recommend'), # 추천 장학금
     path('scholarships/recommend/list/', RecommendScholarListView.as_view(), name='scholarship-recommend-list'), # 추천 장학금 목록 
-    path('scholarships/recommend/list/<str:product_id>/', RecommendScholarshipsDetail.as_view(), name='scholarship-recommend-detail'),  # 추천 장학금 상세
+    path('scholarships/recommend/list/<str:product_id>/', RecommendScholarshipsDetail.as_view(), name='scholarship-recommend-detail'),  # 추천 장학금 상세  
+    path('mypage/view/', AllInfoView.as_view(), name='all-info'),
 ]

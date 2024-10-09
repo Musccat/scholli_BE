@@ -77,7 +77,6 @@ class FoundationListAPIView(APIView):
             }
             for foundation in foundations if foundation['foundation_name']
         ]
-        print(foundation_list)
         return Response(foundation_list)
     
 
