@@ -122,7 +122,7 @@ class RecommendScholarshipsView(generics.GenericAPIView):
 
     def post(self, request):
         # 현재 로그인된 사용자 프로필
-        user_profile = Profile.objects.get(username=self.request.user)
+        user_profile = Profile.objects.get(user=self.request.user)
 
         # 클라이언트에서 POST로 받은 날짜
         current_date_input = request.data.get('date')
@@ -172,12 +172,12 @@ class RecommendScholarshipsView(generics.GenericAPIView):
         for scholarship in final_scholarships:
             # 이미 저장된 추천 기록이 있는지 확인
             recommended_scholarship, created = RecommendResult.objects.get_or_create(
-                user=user_profile.username,
+                user=user_profile.user,
                 scholarship=scholarship,
                 product_id=scholarship.product_id
             )
             if created:
-                print(f"장학금 {scholarship.name}이(가) {user_profile.username}에게 추천되었습니다.")
+                print(f"장학금 {scholarship.name}이(가) {user_profile.user.username}에게 추천되었습니다.")
 
         serializer = self.get_serializer(final_scholarships, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -187,9 +187,9 @@ class RecommendScholarListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user_profile = Profile.objects.get(username=self.request.user)
-        user = user_profile.username
-        return RecommendResult.objects.filter(user=user_profile.username)
+        user_profile = Profile.objects.get(user=self.request.user)
+        #user = user_profile.username
+        return RecommendResult.objects.filter(user=user_profile.user)
     
 class RecommendScholarshipsDetail(generics.RetrieveAPIView):
     queryset = Scholarship.objects.all()
