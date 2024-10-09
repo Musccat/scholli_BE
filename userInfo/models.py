@@ -16,16 +16,16 @@ class Profile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True) 
-    univ_category = models.CharField(max_length=255, choices=[('4년제(5~6년제포함)', '4년제(5~6년제포함)'), ('전문대(2~3년제)', '전문대(2~3년제)'), ('해외대학', '해외대학'), ('학점은행제 대학', '학점은행제 대학'), ('원격대학', '원격대학'), ('기술대학', '기술대학')], default='4년제(5~6년제포함)')
-    gender = models.CharField(max_length=10, choices=[('남성', '남성'), ('여성', '여성'), ('선택안함', '선택안함')], default='선택안함')
+    univ_category = models.CharField(max_length=255, choices=[('4년제(5~6년제포함)', '4년제(5~6년제포함)'), ('전문대(2~3년제)', '전문대(2~3년제)'), ('해외대학', '해외대학'), ('학점은행제 대학', '학점은행제 대학'), ('원격대학', '원격대학'), ('기술대학', '기술대학')], default='4년제(5~6년제포함)', null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=[('남성', '남성'), ('여성', '여성'), ('선택안함', '선택안함')], default='선택안함', null=True, blank=True)
     age = models.SmallIntegerField(null=True, blank=True)
-    university = models.CharField(max_length=100)
-    semester = models.CharField(max_length=10, choices=SEMESTER_CATEGORIES, null=True)
-    major_category = models.CharField(max_length=50, choices=[('공학계열', '공학계열'), ('교육계열', '교육계열'), ('사회계열', '사회계열'), ('예체능계열', '예체능계열'), ('의약계열', '의약계열'), ('인문계열', '인문계열'), ('자연계열', '자연계열')])
-    major = models.CharField(max_length=100)
-    totalGPA = models.CharField(max_length=10)
-    income = models.CharField(max_length=10)
-    residence = models.CharField(max_length=100)
+    university = models.CharField(max_length=100, null=True, blank=True)
+    semester = models.CharField(max_length=10, choices=SEMESTER_CATEGORIES, null=True, blank=True)
+    major_category = models.CharField(max_length=50, choices=[('공학계열', '공학계열'), ('교육계열', '교육계열'), ('사회계열', '사회계열'), ('예체능계열', '예체능계열'), ('의약계열', '의약계열'), ('인문계열', '인문계열'), ('자연계열', '자연계열')], null=True, blank=True)
+    major = models.CharField(max_length=100, null=True, blank=True)
+    totalGPA = models.CharField(max_length=10, null=True, blank=True)
+    income = models.CharField(max_length=10, null=True, blank=True)
+    residence = models.CharField(max_length=100, null=True, blank=True)
     etc = models.TextField(blank=True, null=True)  # 기타 사항
 
     def __str__(self):
