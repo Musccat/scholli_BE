@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, status
 from .models import Profile, Wishlist
 from scholarships.models import Scholarship
-from .serializers import ProfileSerializer, WishlistSerializer, UserInfoScholarshipSerializer, RecommendResultSerializer
+from .serializers import ProfileSerializer, WishlistSerializer, UserInfoScholarshipSerializer, RecommendResultSerializer, AllInfoSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import RecommendResult
@@ -50,6 +50,29 @@ class ProfileUpdateView(generics.RetrieveUpdateAPIView):
         age = calculate_age(birth_date)
         serializer.save(user=self.request.user, age=age)
     
+class AllInfoView(generics.RetrieveAPIView):
+    serializer_class = AllInfoSerializer
+    permission_classes = [IsAuthenticated]  # 로그인한 사용자만 접근 가능
+
+    def get_object(self):
+        # 현재 로그인된 사용자의 Profile 객체를 반환, 없으면 생성
+        profile, created = Profile.objects.get_or_create(
+            user=self.request.user,  # user 외래키는 현재 로그인된 사용자로 설정
+            defaults={
+                'univ_category': None,
+                'gender': None,
+                'age': None,
+                'university': None,
+                'semester': None,
+                'major_category': None,
+                'major': None,
+                'totalGPA': None,
+                'income': None,
+                'residence': None,
+                'etc': None
+            }
+        )
+        return profile
 
 # 찜 추가
 class WishlistCreateView(generics.CreateAPIView):
