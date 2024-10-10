@@ -35,7 +35,7 @@ class AllInfoSerializer(serializers.ModelSerializer):
     #username = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all(), required=False)
     username = serializers.CharField(source='user.username', read_only=True)
     fullname = serializers.CharField(source='user.fullname', read_only=True)
-    nickname = serializers.CharField(source='user.nickname', read_only=True)
+    nickname = serializers.CharField(source='user.nickname')
     birth = serializers.DateField(source='user.birth', read_only=True)
     email = serializers.EmailField(source='user.email', read_only=True)
 
