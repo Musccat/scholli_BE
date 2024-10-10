@@ -17,9 +17,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
-        # user 관련 데이터 가져오기
-        user_data = validated_data.pop('user', {})
-        nickname = user_data.get('nickname', None)
+        # nickname을 validated_data에서 직접 가져옴
+        nickname = validated_data.get('user', {}).get('nickname', None)
         
         # nickname이 있으면 user의 nickname 업데이트
         if nickname:
