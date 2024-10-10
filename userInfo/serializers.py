@@ -5,7 +5,7 @@ from scholarships.models import Scholarship
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all(), required=False)
-    nickname = serializers.SerializerMethodField()  # User 모델의 nickname을 가져오기 위한 필드
+    nickname = serializers.CharField(source='user.nickname')  # User 모델의 nickname을 가져오기 위한 필드
     age = serializers.IntegerField(required=False)
 
     class Meta:
@@ -15,6 +15,19 @@ class ProfileSerializer(serializers.ModelSerializer):
             'semester', 'major_category', 'major', 'totalGPA', 
             'income', 'residence', 'etc'
         ]
+
+    def update(self, instance, validated_data):
+        # user 관련 데이터 가져오기
+        user_data = validated_data.pop('user', {})
+        nickname = user_data.get('nickname', None)
+        
+        # nickname이 있으면 user의 nickname 업데이트
+        if nickname:
+            instance.user.nickname = nickname
+            instance.user.save()
+
+        # 나머지 Profile 필드 업데이트
+        return super().update(instance, validated_data)
 
     # User 모델의 nickname을 가져오는 메서드
     def get_nickname(self, obj):
