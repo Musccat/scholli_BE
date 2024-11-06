@@ -51,7 +51,9 @@ IMP_SECRET = env("IMP_SECRET")
 MERCHANT_CODE = env("MERCHANT_CODE")
 
 # Celery 설정
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis 브로커 설정
+#CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis 브로커 설정
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_BEAT_SCHEDULE = {
     'update-gpt-tips-every-month': {
         'task': 'scholarships.tasks.update_all_scholarships_gpt_tips',  # 작업 경로
@@ -238,6 +240,7 @@ CORS_ALLOW_METHODS = [
     'OPTIONS',
 ]
 
+#email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
