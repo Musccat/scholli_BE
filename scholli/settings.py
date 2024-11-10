@@ -54,6 +54,7 @@ MERCHANT_CODE = env("MERCHANT_CODE")
 #CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis 브로커 설정
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_TIMEZONE = 'Asia/Seoul'
 CELERY_BEAT_SCHEDULE = {
     'update-gpt-tips-every-month': {
         'task': 'scholarships.tasks.update_all_scholarships_gpt_tips',  # 작업 경로
@@ -80,6 +81,9 @@ INSTALLED_APPS = [
     'scholarships',
     'payment',
     'django_filters',
+    'celery',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [

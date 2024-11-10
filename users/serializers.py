@@ -1,4 +1,4 @@
-from users.models import User, EmailVerification
+from users.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
@@ -53,11 +53,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'fullname', 'nickname', 'birth', 'email')
 
     
-class EmailVerificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmailVerification
-        fields = ['email']
+# class EmailVerificationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = EmailVerification
+#         fields = ['email']
 
-class VerifyCodeSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    verification_code = serializers.CharField(max_length=6)
+# class VerifyCodeSerializer(serializers.Serializer):
+#     email = serializers.EmailField()
+#     verification_code = serializers.CharField(max_length=6)
