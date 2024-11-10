@@ -1,5 +1,5 @@
 from django.core.mail import EmailMessage
-from wtnt.celery import app
+from scholli.celery import app
 from .utils import sendEmailHelper
 
 @app.task
