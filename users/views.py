@@ -132,6 +132,7 @@ class ProfileView(APIView):
 #         return Response({"valid": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class EmailVerifyView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         try:
