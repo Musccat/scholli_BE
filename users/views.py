@@ -12,6 +12,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import viewsets
+from .tasks import send_email 
 
 
 #JWT 토큰 발급
@@ -133,7 +134,7 @@ class ProfileView(APIView):
 
 class EmailVerifyView(APIView):
     permission_classes = [AllowAny]
-    
+
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         try:
