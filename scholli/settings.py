@@ -52,8 +52,8 @@ MERCHANT_CODE = env("MERCHANT_CODE")
 
 # Celery 설정
 #CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis 브로커 설정
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_BROKER_URL = 'redis://ubuntu_redis_1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://ubuntu_redis_1:6379/0'
 CELERY_TIMEZONE = 'Asia/Seoul'
 CELERY_BEAT_SCHEDULE = {
     'update-gpt-tips-every-month': {
