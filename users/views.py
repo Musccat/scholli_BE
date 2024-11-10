@@ -133,10 +133,11 @@ class ProfileView(APIView):
 
 class EmailVerifyView(APIView):
     permission_classes = [AllowAny]
+    
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         try:
             send_email.delay(email)
             return Response({"detail":"Success to send Email"}, status=status.HTTP_202_ACCEPTED)
         except Exception as e : 
-            return Response({"error":e}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
