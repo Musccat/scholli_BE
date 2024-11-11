@@ -61,7 +61,15 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(0, 0, day_of_month='1'),  # 매달 1일 자정에 실행
     },
 }
-
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://ubuntu_redis_1:6379/1",  # Redis 컨테이너 이름과 포트에 맞게 설정
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 # Application definition
 INSTALLED_APPS = [
