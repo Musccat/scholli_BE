@@ -163,7 +163,7 @@ class EmailVerifyView(APIView):
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, *args, **kwargs):
-        code = request.data.get("code")
+        code = request.data.get("verify-code")
         email = request.data.get("email")
         if not code or not email:
             return Response({"error": "Email and code are required"}, status=status.HTTP_400_BAD_REQUEST)
