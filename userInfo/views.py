@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
 from .models import Profile, Wishlist
 from scholarships.models import Scholarship
 from .serializers import ProfileSerializer, WishlistSerializer, UserInfoScholarshipSerializer, RecommendResultSerializer, AllInfoSerializer
@@ -114,6 +115,26 @@ class WishlistListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Wishlist.objects.filter(user=self.request.user)
+    
+# 찜 목록 장학금 모집종료 불러오기
+class WishlistCalendarView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        wishlist_items = Wishlist.objects.filter(user=user).select_related('scholarship')
+        
+        # 찜 목록의 장학금 데이터
+        calendar_data = [
+            {
+                "scholarship_id": item.scholarship.product_id,
+                "name": item.scholarship.name,
+                "recruitment_end": item.scholarship.recruitment_end
+            }
+            for item in wishlist_items if item.scholarship.recruitment_end
+        ]
+
+        return Response(calendar_data, status=status.HTTP_200_OK)
 
 # 장학금 추천 뷰 (POST 요청으로 날짜를 받아 처리)
 class RecommendScholarshipsView(generics.GenericAPIView):
