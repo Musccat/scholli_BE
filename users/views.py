@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.core.mail import EmailMessage
 from django_redis import get_redis_connection
+from redis import Redis
 from .utils import sendEmailHelper
 from users.models import User
 from users.serializers import MyTokenObtainPairSerializer, RegisterSerializer, UserProfileSerializer
@@ -15,6 +16,8 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from .tasks import send_email 
 
+# Redis 클라이언트 설정
+client = Redis(host="ubuntu_redis_1", port=6379, db=0, decode_responses=True)
 
 #JWT 토큰 발급
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -149,7 +152,7 @@ class ProfileView(APIView):
 
 class EmailVerifyView(APIView):
     permission_classes = [AllowAny]
-    client = get_redis_connection()
+    client = get_redis_connection("default") 
 
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
