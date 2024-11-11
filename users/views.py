@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from django.http import JsonResponse
 from django.core.mail import EmailMessage
+from django_redis import get_redis_connection
 from .utils import sendEmailHelper
 from users.models import User
 from users.serializers import MyTokenObtainPairSerializer, RegisterSerializer, UserProfileSerializer
@@ -33,6 +34,20 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        if not email:
+            return Response({"error":"Email is required for registration"}, status=status.HTTP_400_BAD_REQUEST)
+
+        verification_status = client.get(email)
+        if verification_status != "true":
+            return Response({"error":"Email not verified"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = super().create(request, *args, **kwargs)
+
+        client.delete(email)
+        return response
 
 #API 기본 라우트를 리스트로 반환
 @api_view(['GET'])
@@ -134,6 +149,7 @@ class ProfileView(APIView):
 
 class EmailVerifyView(APIView):
     permission_classes = [AllowAny]
+    client = get_redis_connection()
 
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
@@ -142,3 +158,16 @@ class EmailVerifyView(APIView):
             return Response({"detail":"Success to send Email"}, status=status.HTTP_202_ACCEPTED)
         except Exception as e : 
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, *args, **kwargs):
+        code = request.data.get("code")
+        email = request.data.get("email")
+        if not code or not email:
+            return Response({"error": "Email and code are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        answer = client.get(email)
+        if code == answer:
+            client.set(email, "true", ex=86400)
+            return Response({"detail": "Email verified successfully"}, status=status.HTTP_200_OK)
+        else : 
+            return Response({"error": "Code Not Matched"}, status=status.HTTP_400_BAD_REQUEST)
