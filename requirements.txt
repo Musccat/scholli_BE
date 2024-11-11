@@ -45,3 +45,4 @@ yarl==1.11.1
 django-environ==0.11.2
 django-celery-beat==2.7.0
 django-celery-results==2.5.1
+django_redis==5.4.0
