@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Profile, Wishlist, RecommendResult
 from users.models import User
 from scholarships.models import Scholarship
+from .views import calculate_age
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all(), required=False)

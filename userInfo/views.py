@@ -134,6 +134,9 @@ class RecommendScholarshipsView(generics.GenericAPIView):
         except ValueError:
             return Response({"error": "잘못된 날짜 형식입니다. YYYY-MM-DD 형식으로 입력하세요."}, status=status.HTTP_400_BAD_REQUEST)
         
+        # 기존 추천 결과 삭제
+        RecommendResult.objects.filter(user=user_profile.user).delete()
+        
         # 1. 모집 날짜 필터링
         scholarships = Scholarship.objects.all()
         scholarships = filter_scholarships_by_date(current_date, scholarships)
@@ -170,14 +173,11 @@ class RecommendScholarshipsView(generics.GenericAPIView):
 
         # 7. 추천된 장학금을 DB에 저장
         for scholarship in final_scholarships:
-            # 이미 저장된 추천 기록이 있는지 확인
-            recommended_scholarship, created = RecommendResult.objects.get_or_create(
+            RecommendResult.objects.create(
                 user=user_profile.user,
                 scholarship=scholarship,
                 product_id=scholarship.product_id
             )
-            if created:
-                print(f"장학금 {scholarship.name}이(가) {user_profile.user.username}에게 추천되었습니다.")
 
         serializer = self.get_serializer(final_scholarships, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
