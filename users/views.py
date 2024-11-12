@@ -44,13 +44,15 @@ class RegisterView(generics.CreateAPIView):
         if not email:
             return Response({"error":"Email is required for registration"}, status=status.HTTP_400_BAD_REQUEST)
 
-        verification_status = client.get(email)
+        verification_status = self.client
+        if verification_status is None:
+            return Response({"error":"Email not verified or verification expired"}, status=status.HTTP_400_BAD_REQUEST)
         if verification_status.decode("utf-8") != "true":
             return Response({"error":"Email not verified"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = super().create(request, *args, **kwargs)
 
-        client.delete(email)
+        self.client.delete(email)
         return response
 
 #API 기본 라우트를 리스트로 반환
