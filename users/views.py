@@ -168,9 +168,10 @@ class EmailVerifyView(APIView):
         if not code or not email:
             return Response({"error": "Email and code are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        answer = client.get(email)
+        answer = self.client.get(email)
         if code == answer:
-            client.set(email, "true", ex=86400)
+            self.client.delete(email)
+            self.client.set(email, "true", ex=86400)
             return Response({"detail": "Email verified successfully"}, status=status.HTTP_200_OK)
         else : 
             return Response({"error": "Code Not Matched"}, status=status.HTTP_400_BAD_REQUEST)
