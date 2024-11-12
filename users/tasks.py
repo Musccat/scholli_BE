@@ -9,6 +9,7 @@ def send_email(email):
     client = get_redis_connection("default") 
     code = sendEmailHelper.make_random_code()
     client.set(email, code, ex=300)  #email 키에 code 값을 300초(5분)동안 저장
+    print("Saved in Redis:", client.get(email))
     message = code
     subject = "%s" % "[SCHOLLI] 이메일 인증 코드 안내"
     to = [email]
