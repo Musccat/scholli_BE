@@ -37,6 +37,7 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+    client = get_redis_connection("default") 
 
     def create(self, request, *args, **kwargs):
         email = request.data.get("email")
@@ -44,7 +45,7 @@ class RegisterView(generics.CreateAPIView):
             return Response({"error":"Email is required for registration"}, status=status.HTTP_400_BAD_REQUEST)
 
         verification_status = client.get(email)
-        if verification_status != "true":
+        if verification_status.decode("utf-8") != "true":
             return Response({"error":"Email not verified"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = super().create(request, *args, **kwargs)
