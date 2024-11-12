@@ -16,9 +16,6 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from .tasks import send_email 
 
-# Redis 클라이언트 설정
-client = Redis(host="ubuntu_redis_1", port=6379, db=0, decode_responses=True)
-
 #JWT 토큰 발급
 class MyTokenObtainPairView(TokenObtainPairView):
     permission_classes = (AllowAny,)
@@ -37,14 +34,14 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
-    client = get_redis_connection("default") 
 
     def create(self, request, *args, **kwargs):
         email = request.data.get("email")
         if not email:
             return Response({"error":"Email is required for registration"}, status=status.HTTP_400_BAD_REQUEST)
 
-        verification_status = self.client
+        client = get_redis_connection("default") 
+        verification_status = client.get(email)
         if verification_status is None:
             return Response({"error":"Email not verified or verification expired"}, status=status.HTTP_400_BAD_REQUEST)
         if verification_status.decode("utf-8") != "true":
@@ -52,7 +49,7 @@ class RegisterView(generics.CreateAPIView):
         
         response = super().create(request, *args, **kwargs)
 
-        self.client.delete(email)
+        client.delete(email)
         return response
 
 #API 기본 라우트를 리스트로 반환
