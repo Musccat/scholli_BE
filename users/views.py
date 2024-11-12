@@ -169,7 +169,7 @@ class EmailVerifyView(APIView):
             return Response({"error": "Email and code are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         answer = self.client.get(email)
-        if code == answer:
+        if code == answer.decode("utf-8"):
             self.client.delete(email)
             self.client.set(email, "true", ex=86400)
             return Response({"detail": "Email verified successfully"}, status=status.HTTP_200_OK)
