@@ -240,7 +240,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://musccat-project-fe.vercel.app",
+    "https://www.schollli.site",
 ]
 
 CORS_ALLOW_METHODS = [
