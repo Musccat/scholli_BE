@@ -15,8 +15,8 @@ class ScholarshipsConfig(AppConfig):
 
         #Celery Beat Crontab Schedule 설정
         schedule, created = CrontabSchedule.objects.get_or_create(
-            minute=0, #매 정시에 실행
-            hour=12, #12시 정각(정오)
+            minute=40, #매 정시에 실행
+            hour=20, #12시 정각(정오)
         )
 
         #Periodic Task 생성
