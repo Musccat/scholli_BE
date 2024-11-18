@@ -7,6 +7,8 @@ from django.conf import settings
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render
+from django.utils.dateparse import parse_datetime
+from decimal import Decimal
 
 # 결제 페이지를 렌더링하는 뷰
 def payment_page(request):
@@ -16,10 +18,12 @@ def payment_page(request):
 
 class PaymentView(APIView):
     def post(self, request):
-        imp_uid = request.data.get('imp_uid')  # 클라이언트에서 전송한 imp_uid
+        imp_uid = request.data.get('imp_uid')
         merchant_uid = request.data.get('merchant_uid')
+        amount = request.data.get('amount')
+        payment_time = request.data.get('payment_time')
 
-        if not imp_uid or not merchant_uid:
+        if not imp_uid or not merchant_uid or not amount or not payment_time:
             return Response({"error": "결제 정보가 누락되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Iamport 인스턴스 초기화
@@ -35,12 +39,12 @@ class PaymentView(APIView):
             if response['status'] == 'paid':
                 # 결제 정보를 저장
                 payment = Payment.objects.create(
-                    user=request.user,
-                    amount=response['amount'],
+                    user=request.user,  # 인증된 사용자
+                    amount=Decimal(amount),  # 클라이언트 요청 데이터를 Decimal로 변환
                     merchant_uid=merchant_uid,
                     imp_uid=imp_uid,
-                    status='paid',
-                    payment_time=timezone.now()
+                    status=request.data.get('status', 'unknown'),  # 상태 저장
+                    payment_time=parse_datetime(payment_time)  # 클라이언트의 시간 데이터를 파싱
                 )
                 return Response({"message": "결제가 성공적으로 완료되었습니다."}, status=status.HTTP_200_OK)
             else:
