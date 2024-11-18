@@ -79,7 +79,7 @@ services:
     depends_on:
       - web
       - redis
-    network:
+    networks:
       - app_network
 volumes:
   static:
