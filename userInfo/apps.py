@@ -19,9 +19,11 @@ class ScholarshipsConfig(AppConfig):
             hour=20, #12시 정각(정오)
         )
 
-        #Periodic Task 생성
-        PeriodicTask.objects.get_or_create(
-            crontab=schedule,
-            name='Send Deadline Email Task',
-            task='userInfo.tasks.send_deadline_email',
-        )
+         # Periodic Task 생성
+        task_name = 'Send Deadline Email Task'
+        if not PeriodicTask.objects.filter(name=task_name).exists():
+            PeriodicTask.objects.create(
+                crontab=schedule,
+                name=task_name,
+                task='userInfo.tasks.send_deadline_email',
+            )
