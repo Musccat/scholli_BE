@@ -43,6 +43,8 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   redis:
     image: redis:alpine
+    networks:
+      - app_network
   celery:
     restart: always
     build:
@@ -59,6 +61,8 @@ services:
     depends_on:
       - web
       - redis
+    networks:
+      - app_network
   celery-beat:
     restart: always
     build:
@@ -75,6 +79,11 @@ services:
     depends_on:
       - web
       - redis
+    network:
+      - app_network
 volumes:
   static:
   media:
+networks:
+  app_network:
+    driver: bridge
