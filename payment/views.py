@@ -23,6 +23,7 @@ class PaymentView(APIView):
         amount = request.data.get('amount')
         payment_time = request.data.get('payment_time')
 
+        print("Received data:", request.data)  # 요청 데이터 디버깅
         if not imp_uid or not merchant_uid or not amount or not payment_time:
             return Response({"error": "결제 정보가 누락되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -34,6 +35,7 @@ class PaymentView(APIView):
         try:
             # Iamport에서 결제 상태 조회
             response = iamport.find_by_imp_uid(imp_uid=imp_uid)
+            print("Iamport response:", response)  # Iamport 응답 디버깅
 
             # 결제가 성공 상태인지 확인
             if response['status'] == 'paid':
