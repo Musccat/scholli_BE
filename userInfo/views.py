@@ -86,27 +86,40 @@ class WishlistCreateView(generics.CreateAPIView):
         product_id = self.request.data.get('scholarship_id')  # 클라이언트에서 전달받은 product_id
         try:
             scholarship = Scholarship.objects.get(product_id=product_id)
+            
+            # 사용자별로 중복 확인
+            if Wishlist.objects.filter(user=user, scholarship=scholarship).exists():
+                raise ValidationError({"error": "이미 찜 목록에 추가된 장학금입니다."})
+
+            # 중복이 없으면 저장
             serializer.save(user=user, scholarship=scholarship)
         except Scholarship.DoesNotExist:
-            return Response({"error": "해당 장학금을 찾을 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({"error": "해당 장학금을 찾을 수 없습니다."})
 
 # 찜 삭제
-class WishlistDeleteView(generics.DestroyAPIView):
-    queryset = Wishlist.objects.all()
+class WishlistDeleteView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def delete(self, request, *args, **kwargs):
-        user = self.request.user
-        product_id = self.kwargs['scholarship_id']  # URL에서 받은 product_id
+        user = request.user
+        product_id = self.kwargs.get('scholarship_id')  # URL에서 받은 product_id
+
         try:
+            # product_id로 장학금 객체를 찾기
             scholarship = Scholarship.objects.get(product_id=product_id)
+
+            # 사용자와 연결된 찜 항목 찾기
             wishlist_item = Wishlist.objects.get(user=user, scholarship=scholarship)
+
+            # 찜 항목 삭제
             wishlist_item.delete()
             return Response({"message": "찜 목록에서 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+
         except Scholarship.DoesNotExist:
             return Response({"error": "해당 장학금을 찾을 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
         except Wishlist.DoesNotExist:
             return Response({"error": "찜 목록에 해당 장학금이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # 찜 목록 조회
 class WishlistListView(generics.ListAPIView):
