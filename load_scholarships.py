@@ -9,7 +9,7 @@ from scholarships.models import Scholarship
 
 # JSON 파일들이 있는 디렉토리 설정
 json_directory = './' 
-json_files = ['response5.json', 'response6.json', 'response7.json', 'response8.json']
+json_files = ['response5.json', 'response6.json', 'response7.json', 'response8.json', 'response9.json', 'response10.json']
 
 for json_file in json_files:
     file_path = os.path.join(json_directory, json_file)
