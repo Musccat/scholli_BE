@@ -10,6 +10,12 @@ from django.shortcuts import render
 from django.utils.dateparse import parse_datetime
 from decimal import Decimal
 
+# 결제 페이지를 렌더링하는 뷰
+def payment_page(request):
+    permission_classes = [IsAuthenticated]
+    merchant_code = settings.MERCHANT_CODE 
+    return render(request, 'payment.html', {'merchant_code': merchant_code})
+
 class PaymentView(APIView):
     def post(self, request):
         imp_uid = request.data.get('imp_uid')
