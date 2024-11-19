@@ -10,12 +10,6 @@ from django.shortcuts import render
 from django.utils.dateparse import parse_datetime
 from decimal import Decimal
 
-# 결제 페이지를 렌더링하는 뷰
-def payment_page(request):
-    permission_classes = [IsAuthenticated]
-    merchant_code = settings.MERCHANT_CODE 
-    return render(request, 'payment.html', {'merchant_code': merchant_code})
-
 class PaymentView(APIView):
     def post(self, request):
         imp_uid = request.data.get('imp_uid')
@@ -26,6 +20,10 @@ class PaymentView(APIView):
         print("Received data:", request.data)  # 요청 데이터 디버깅
         if not imp_uid or not merchant_uid or not amount or not payment_time:
             return Response({"error": "결제 정보가 누락되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        payment_time_parsed = parse_datetime(payment_time)
+        if not payment_time_parsed:
+            return Response({"error": "Invalid payment_time format."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Iamport 인스턴스 초기화
         imp_key = settings.IMP_KEY
