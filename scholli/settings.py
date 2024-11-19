@@ -248,9 +248,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # 인증 정보를 포함한 요청 허용
-CORS_ALLOW_ORIGIN_REGEXES = [
-    r"^https://www\.schollli\.site$",,  # 정확한 프론트엔드 도메인
-]
+
 
 CORS_ALLOW_METHODS = [
     'GET',
