@@ -1,19 +1,21 @@
 from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import AnonymousUser
 from userInfo.models import UserSubscription
 
 def subscription_required(view_func):
     @wraps(view_func)
-    def _wrapped_view(request, *args, **kwargs):
+    def _wrapped_view(view, *args, **kwargs):
+        # 요청 객체 가져오기
+        request = view.request if hasattr(view, 'request') else view
+
         # 사용자 인증 확인
         if not request.user.is_authenticated:
             return Response(
                 {"error": "이 기능을 사용하려면 로그인해야 합니다."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        
+
         try:
             subscription = UserSubscription.objects.get(user=request.user)
             subscription.check_subscription_status()  # 만료 상태 확인
@@ -28,5 +30,5 @@ def subscription_required(view_func):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        return view_func(request, *args, **kwargs)
+        return view_func(view, *args, **kwargs)
     return _wrapped_view
