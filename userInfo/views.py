@@ -10,7 +10,7 @@ from .utils import filter_scholarships_by_date, filter_basic, gpt_filter_region,
 from rest_framework.exceptions import ValidationError, NotFound 
 from django.utils.dateparse import parse_date
 from datetime import datetime, date
-from .utils import subscription_required
+from payment.utils import subscription_required
 import openai
 import re
 from django.core.exceptions import ObjectDoesNotExist
