@@ -11,7 +11,6 @@ from payment.utils import subscription_required
 from userInfo.models import UserSubscription
 
 class ReviewList(APIView):
-    @subscription_required
     def get(self, request, product_id):
         try:
             # product_id를 기반으로 해당 장학금을 찾음
@@ -41,10 +40,15 @@ class ReviewList(APIView):
                 "user": {
                     "username": review.user.username,
                 },
-                "created_at": review.created_at,
-                "rating": review.rating,
-                # 구독 여부에 따라 content 처리
-                "content": review.content if is_subscribed else "**** 내용이 가려졌습니다. ****",
+                "income": review.income,
+                "totalGPA": review.totalGPA,
+                "univCategory": review.univCategory,
+                "semesterCategory": review.semesterCategory,
+                "majorCategory": review.majorCategory,
+                "year": review.year,
+                # 구독 여부에 따라 advice와 interviewTip 처리
+                "advice": review.advice if is_subscribed else "**** 내용이 가려졌습니다. ****",
+                "interviewTip": review.interviewTip if is_subscribed else "**** 내용이 가려졌습니다. ****",
             })
 
         # 응답 데이터 구성
@@ -77,7 +81,6 @@ class ReviewList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ReviewDetailView(APIView):
-    @subscription_required
     def put(self, request, review_pk):
         review = get_object_or_404(Review, id=review_pk)
         if request.user == review.user:
