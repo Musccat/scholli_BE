@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Payment
+from userInfo.models import UserSubscription
 from .iamport import Iamport
 from django.conf import settings
 from django.utils import timezone
@@ -52,9 +53,14 @@ class PaymentView(APIView):
                     status=request.data.get('status', 'unknown'),  # 상태 저장
                     payment_time=parse_datetime(payment_time)  # 클라이언트의 시간 데이터를 파싱
                 )
-                return Response({"message": "결제가 성공적으로 완료되었습니다."}, status=status.HTTP_200_OK)
+
+                # 구독 활성화 처리
+                subscription, created = UserSubscription.objects.get_or_create(user=request.user)
+                subscription.activate_subscription()
+
+                return Response({"message": "결제가 성공적으로 완료되었고, 구독이 활성화되었습니다."}, status=status.HTTP_200_OK)
             else:
-                return Response({"error": "결제 실패: 결제가 완료되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "결제가 완료되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         except Iamport.ResponseError as e:
             return Response({"error": f"Iamport 오류: {e.message}"}, status=status.HTTP_400_BAD_REQUEST)

@@ -14,9 +14,10 @@ def subscription_required(view_func):
         
         try:
             subscription = UserSubscription.objects.get(user=request.user)
+            subscription.check_subscription_status()  # 만료 상태 확인
             if not subscription.is_active:
                 return Response(
-                    {"error": "이 기능을 사용하려면 활성화된 구독이 필요합니다. 구독 후 이용해 주세요."},
+                    {"error": "이 기능을 사용하려면 활성화된 구독이 필요합니다."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
         except UserSubscription.DoesNotExist:
@@ -28,4 +29,5 @@ def subscription_required(view_func):
         return view_func(request, *args, **kwargs)
 
     return _wrapped_view
+
      

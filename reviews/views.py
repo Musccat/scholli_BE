@@ -7,7 +7,8 @@ from rest_framework.generics import get_object_or_404
 from reviews.serializers import ReviewSerializer
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-
+from payment.utils import subscription_required
+from userInfo.models import UserSubscription
 
 class ReviewList(APIView):
     def get(self, request, product_id):
@@ -21,9 +22,42 @@ class ReviewList(APIView):
         # 해당 장학금에 대한 리뷰들을 불러옴
         reviews = Review.objects.filter(scholarship=scholarship).order_by("-id")
 
-        # ReviewSerializer를 사용하여 데이터를 직렬화
-        serializer = ReviewSerializer(reviews, many=True)
-        return Response(serializer.data)
+        # 구독 상태 확인
+        is_subscribed = False
+        if request.user.is_authenticated:
+            try:
+                subscription = UserSubscription.objects.get(user=request.user)
+                subscription.check_subscription_status()  # 구독 상태 확인
+                is_subscribed = subscription.is_active
+            except UserSubscription.DoesNotExist:
+                pass
+
+        # 리뷰 데이터를 구독 상태에 따라 처리
+        serialized_reviews = []
+        for review in reviews:
+            serialized_reviews.append({
+                "id": review.id,
+                "user": {
+                    "username": review.user.username,
+                },
+                "income": review.income,
+                "totalGPA": review.totalGPA,
+                "univCategory": review.univCategory,
+                "semesterCategory": review.semesterCategory,
+                "majorCategory": review.majorCategory,
+                "year": review.year,
+                # 구독 여부에 따라 advice와 interviewTip 처리
+                "advice": review.advice if is_subscribed else "**** 내용이 가려졌습니다. ****",
+                "interviewTip": review.interviewTip if is_subscribed else "**** 내용이 가려졌습니다. ****",
+            })
+
+        # 응답 데이터 구성
+        response_data = {
+            "is_subscribed": is_subscribed,
+            "reviews": serialized_reviews,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
     
     def post(self, request):
         print(request.data)

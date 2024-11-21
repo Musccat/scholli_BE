@@ -1,6 +1,8 @@
 from users.models import User
 from django.db import models
 from scholarships.models import Scholarship
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 class Profile(models.Model):
     
@@ -52,3 +54,21 @@ class RecommendResult(models.Model):
 
     def __str__(self):
         return f"{self.user.username}에게 추천된 {self.scholarship.name}"
+    
+User = get_user_model()
+
+class UserSubscription(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="subscription")
+    is_active = models.BooleanField(default=False)  # 구독 상태
+    expiration_date = models.DateTimeField(null=True, blank=True)  # 구독 만료일
+
+    def activate_subscription(self):
+        self.is_active = True
+        self.expiration_date = timezone.now() + timezone.timedelta(days=30)  # 1개월 구독
+        self.save()
+
+    def check_subscription_status(self):
+        # 구독 만료일이 지났으면 비활성화
+        if self.expiration_date and self.expiration_date < timezone.now():
+            self.is_active = False
+            self.save()

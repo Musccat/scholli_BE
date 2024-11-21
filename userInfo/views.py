@@ -10,6 +10,7 @@ from .utils import filter_scholarships_by_date, filter_basic, gpt_filter_region,
 from rest_framework.exceptions import ValidationError, NotFound 
 from django.utils.dateparse import parse_date
 from datetime import datetime, date
+from .utils import subscription_required
 import openai
 import re
 from django.core.exceptions import ObjectDoesNotExist
@@ -81,6 +82,7 @@ class WishlistCreateView(generics.CreateAPIView):
     serializer_class = WishlistSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @subscription_required 
     def perform_create(self, serializer):
         user = self.request.user
         product_id = self.request.data.get('scholarship_id')  # 클라이언트에서 전달받은 product_id
@@ -100,6 +102,7 @@ class WishlistCreateView(generics.CreateAPIView):
 class WishlistDeleteView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    @subscription_required 
     def delete(self, request, *args, **kwargs):
         user = request.user
         product_id = self.kwargs.get('scholarship_id')  # URL에서 받은 product_id
@@ -126,6 +129,7 @@ class WishlistListView(generics.ListAPIView):
     serializer_class = WishlistSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @subscription_required 
     def get_queryset(self):
         return Wishlist.objects.filter(user=self.request.user)
     
@@ -133,6 +137,7 @@ class WishlistListView(generics.ListAPIView):
 class WishlistCalendarView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @subscription_required 
     def get(self, request):
         user = request.user
         wishlist_items = Wishlist.objects.filter(user=user).select_related('scholarship')
@@ -154,6 +159,7 @@ class RecommendScholarshipsView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserInfoScholarshipSerializer
 
+    @subscription_required  # 구독 확인 데코레이터 적용
     def post(self, request):
         # 현재 로그인된 사용자 프로필
         user_profile = Profile.objects.get(user=self.request.user)
