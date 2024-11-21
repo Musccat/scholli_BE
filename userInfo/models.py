@@ -64,7 +64,7 @@ class UserSubscription(models.Model):
 
     def activate_subscription(self):
         self.is_active = True
-        self.expiration_date = timezone.now() + timezone.timedelta(days=30)  # 1개월 구독
+        self.expiration_date = timezone.now() + timezone.timedelta(days=31)  # 1개월 구독
         self.save()
 
     def check_subscription_status(self):
