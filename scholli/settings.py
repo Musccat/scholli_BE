@@ -58,7 +58,7 @@ CELERY_TIMEZONE = 'Asia/Seoul'
 CELERY_BEAT_SCHEDULE = {
     'update-gpt-tips-every-month': {
         'task': 'scholarships.tasks.update_all_scholarships_gpt_tips',  # 작업 경로
-        'schedule': crontab(5, 22, day_of_month='18'),  # 매달 1일 자정에 실행
+        'schedule': crontab(5, 22, day_of_month='15'),  # 매달 1일 자정에 실행
     },
     'send-deadline-email': {
         'task': 'userInfo.tasks.send_deadline_email',
