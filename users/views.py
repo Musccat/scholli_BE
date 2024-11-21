@@ -14,7 +14,8 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import viewsets
-from .tasks import send_email 
+from .tasks import send_email
+from django.template.loader import render_to_string
 
 #JWT 토큰 발급
 class MyTokenObtainPairView(TokenObtainPairView):
