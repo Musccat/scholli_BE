@@ -6,10 +6,7 @@ from userInfo.models import UserSubscription
 
 def subscription_required(view_func):
     @wraps(view_func)
-    def _wrapped_view(view, *args, **kwargs):
-        # CBV에서는 self가 첫 번째 매개변수로 전달됨
-        request = view.request if hasattr(view, 'request') else args[0]
-        
+    def _wrapped_view(request, *args, **kwargs):
         # 사용자 인증 확인
         if not request.user.is_authenticated:
             return Response(
@@ -32,7 +29,4 @@ def subscription_required(view_func):
             )
 
         return view_func(request, *args, **kwargs)
-
     return _wrapped_view
-
-     
