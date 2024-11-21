@@ -57,18 +57,18 @@ class RecommendResult(models.Model):
     
 User = get_user_model()
 
-class UserSubscription(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="subscription")
-    is_active = models.BooleanField(default=False)  # 구독 상태
-    expiration_date = models.DateTimeField(null=True, blank=True)  # 구독 만료일
+# class UserSubscription(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="subscription")
+#     is_active = models.BooleanField(default=False)  # 구독 상태
+#     expiration_date = models.DateTimeField(null=True, blank=True)  # 구독 만료일
 
-    def activate_subscription(self):
-        self.is_active = True
-        self.expiration_date = timezone.now() + timezone.timedelta(days=31)  # 1개월 구독
-        self.save()
+#     def activate_subscription(self):
+#         self.is_active = True
+#         self.expiration_date = timezone.now() + timezone.timedelta(days=31)  # 1개월 구독
+#         self.save()
 
-    def check_subscription_status(self):
-        # 구독 만료일이 지났으면 비활성화
-        if self.expiration_date and self.expiration_date < timezone.now():
-            self.is_active = False
-            self.save()
+#     def check_subscription_status(self):
+#         # 구독 만료일이 지났으면 비활성화
+#         if self.expiration_date and self.expiration_date < timezone.now():
+#             self.is_active = False
+#             self.save()
