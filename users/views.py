@@ -113,7 +113,16 @@ class EmailVerifyView(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         try:
-            send_email.delay(email)
+            #인증코드 생성 및 redis 저장
+            code = sendEmailHelper.make_random_code()
+            self.client.set(email, code, ex=300)
+
+            #템플릿 렌더링
+            context = {"code": code}
+            message = render_to_string("email_verification.html", context)
+
+            #celery 작업 호출
+            send_email.delay(email, message)
             return Response({"detail":"Success to send Email"}, status=status.HTTP_202_ACCEPTED)
         except Exception as e : 
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
