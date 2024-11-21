@@ -106,50 +106,6 @@ class ProfileView(APIView):
         print("안녕")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-# class SendVerificationCodeView(APIView):
-#     permission_classes = [AllowAny]
-#     def post(self, request):
-#         serializer = EmailVerificationSerializer(data=request.data)
-#         if serializer.is_valid():
-#             email = serializer.validated_data['email']
-#             verification, created = EmailVerification.objects.get_or_create(email=email)
-#             verification.generate_verification_code()
-
-#             # 인증번호를 포함한 이메일 전송
-#             send_mail(
-#                 subject='Your Verification Code',  # 이메일 제목
-#                 message=f'Your verification code is {verification.verification_code}.',  # 이메일 내용
-#                 from_email=settings.DEFAULT_FROM_EMAIL,  # 발신자 이메일 (settings.py에 설정 필요)
-#                 recipient_list=[email],  # 수신자 이메일
-#                 fail_silently=False,  # 에러 발생 시 예외를 발생시킵니다.
-#             )
-
-#             return Response({"message": "Verification code sent."}, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class VerifyCodeView(APIView):
-#     permission_classes = [AllowAny]
-#     def post(self, request):
-#         serializer = VerifyCodeSerializer(data=request.data)
-#         if serializer.is_valid():
-#             email = serializer.validated_data['email']
-#             entered_code = serializer.validated_data['verify_code']
-
-#             try:
-#                 # 이메일로 저장된 인증번호 가져오기
-#                 verification = EmailVerification.objects.get(email=email)
-
-#                 # 인증번호 유효성 검사
-#                 if verification.verification_code == entered_code and verification.is_code_valid():
-#                     return Response({"valid": True}, status=status.HTTP_200_OK)
-#                 else:
-#                     return Response({"valid": False, "message": "Invalid or expired verification code."}, status=status.HTTP_400_BAD_REQUEST)
-#             except EmailVerification.DoesNotExist:
-#                 return Response({"valid": False, "message": "No verification code found for this email."}, status=status.HTTP_404_NOT_FOUND)
-
-#         return Response({"valid": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
 class EmailVerifyView(APIView):
     permission_classes = [AllowAny]
     client = get_redis_connection("default") 

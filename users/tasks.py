@@ -10,10 +10,16 @@ def send_email(email):
     code = sendEmailHelper.make_random_code()
     client.set(email, code, ex=300)  #email 키에 code 값을 300초(5분)동안 저장
     print("Saved in Redis:", client.get(email))
-    message = code
+
+    #이미지 템플릿 렌더링
+    context = {"code" : code}
+    message = render_to_string('email_verification.html', context)
+
+    #이메일 설정
     subject = "%s" % "[SCHOLLI] 이메일 인증 코드 안내"
     to = [email]
     mail = EmailMessage(subject=subject, body=message, to=to)
-    # mail.coontent_subtype="html"
+    mail.coontent_subtype="html"
     mail.send()
+    
     return "Success to send email"
