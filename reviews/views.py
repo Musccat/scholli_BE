@@ -40,15 +40,15 @@ class ReviewList(APIView):
                 "user": {
                     "username": review.user.username,
                 },
-                "income": review.income,
-                "totalGPA": review.totalGPA,
-                "univCategory": review.univCategory,
-                "semesterCategory": review.semesterCategory,
-                "majorCategory": review.majorCategory,
+                "income": review.income if is_subscribed else "*분위",
+                "totalGPA": review.totalGPA if is_subscribed else "*.**",
+                "univCategory": review.univCategory if is_subscribed else "*년제",
+                "semesterCategory": review.semesterCategory if is_subscribed else "대학*학기",
+                "majorCategory": review.majorCategory if is_subscribed else "**계열",
                 "year": review.year,
                 # 구독 여부에 따라 advice와 interviewTip 처리
-                "advice": review.advice if is_subscribed else "**** 내용이 가려졌습니다. ****",
-                "interviewTip": review.interviewTip if is_subscribed else "**** 내용이 가려졌습니다. ****",
+                "advice": review.advice if is_subscribed else "*" * len(review.advice),
+                "interviewTip": review.interviewTip if is_subscribed else "*" * len(review.interviewTip),
             })
 
         # 응답 데이터 구성
