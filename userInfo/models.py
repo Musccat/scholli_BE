@@ -31,7 +31,7 @@ class Profile(models.Model):
     etc = models.TextField(blank=True, null=True)  # 기타 사항
 
     def __str__(self):
-        return self.username.username
+    return self.user.username if self.user else "No User"
 
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
