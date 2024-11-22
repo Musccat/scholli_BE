@@ -15,5 +15,5 @@ urlpatterns = [
     path('scholarships/recommend/list/', RecommendScholarListView.as_view(), name='scholarship-recommend-list'), # 추천 장학금 목록 
     path('scholarships/recommend/list/<str:product_id>/', RecommendScholarshipsDetail.as_view(), name='scholarship-recommend-detail'),  # 추천 장학금 상세  
     path('mypage/view/', AllInfoView.as_view(), name='all-info'),
-    path('checksubscibe', CheckSubscriptionView.as_view(), name='check-subscription'),
+    path('checksubscribe/', CheckSubscriptionView.as_view(), name='check-subscription'),
 ]
