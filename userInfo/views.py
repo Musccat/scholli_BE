@@ -57,15 +57,11 @@ class CheckSubscriptionView(APIView):
 
     def get(self, request):
         try:
-            # 현재 사용자의 구독 정보를 가져옴
-            subscription = UserSubscription.objects.get(user=request.user)
-
-            # 구독이 활성 상태인지 확인
-            is_subscribed = subscription.is_active and subscription.expiry_date >= date.today()
-
+            # 현재 사용자의 구독 상태 확인
+            is_subscribed = request.user.subscription.is_active
             return Response({"isSubscribed": is_subscribed}, status=200)
         except UserSubscription.DoesNotExist:
-            # 구독 정보가 없는 경우 false 반환
+            # 구독 정보가 없을 경우 false 반환
             return Response({"isSubscribed": False}, status=200)
 
 class AllInfoView(generics.RetrieveAPIView):
