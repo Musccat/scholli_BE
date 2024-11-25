@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta
 from .models import Wishlist
 from scholarships.models import Scholarship
-
+from userInfo.models import UserSubscription
 
 @shared_task
 def send_deadline_email():
@@ -19,11 +19,20 @@ def send_deadline_email():
         for wishlist in wishlists:
             user = wishlist.user
             try:
-                send_mail(
-                    subject='[SCHOLLI] 장학금 신청 마감 안내',
-                    message=f'{scholarship.name} 장학금의 신청 마감일이 {scholarship.recruitment_end}입니다. 서둘러 신청하세요!',
-                    from_email=settings.DEFAULT_FROM_EMAIL,  # 발신자 이메일 (settings.py에 설정 필요)
-                    recipient_list=[user.email],  # 수신자 이메일
-                )
+                # 사용자 구독 상태 확인
+                subscription = UserSubscription.objects.get(user=user)
+                if subscription.is_active:  # 구독이 활성화된 경우
+                    send_mail(
+                        subject='[SCHOLLI] 장학금 신청 마감 안내',
+                        message=(
+                            f"{scholarship.name} 장학금의 신청 마감일이 {scholarship.recruitment_end}입니다.\n\n"
+                            f"제출서류:\n{scholarship.required_documents_details}\n\n"
+                            "서둘러 신청하세요!"
+                        ),
+                        from_email=settings.DEFAULT_FROM_EMAIL,  # 발신자 이메일 (settings.py에 설정 필요)
+                        recipient_list=[user.email],  # 수신자 이메일
+                        )
+            except UserSubscription.DoesNotExist: # 구독 정보가 없는 경우 무시
+                continue
             except Exception as e:
                 print(f"Error sending email to {user.email}: {e}")

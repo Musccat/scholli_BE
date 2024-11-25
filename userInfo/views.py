@@ -5,7 +5,7 @@ from scholarships.models import Scholarship
 from .serializers import ProfileSerializer, WishlistSerializer, UserInfoScholarshipSerializer, RecommendResultSerializer, AllInfoSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import RecommendResult
+from .models import RecommendResult, UserSubscription
 from .utils import filter_scholarships_by_date, filter_basic, gpt_filter_region, recommend_scholarships,  separate_scholarships
 from rest_framework.exceptions import ValidationError, NotFound 
 from django.utils.dateparse import parse_date
@@ -51,7 +51,19 @@ class ProfileUpdateView(generics.RetrieveUpdateAPIView):
         birth_date = self.request.user.birth
         age = calculate_age(birth_date)
         serializer.save(user=self.request.user, age=age)
-    
+        
+class CheckSubscriptionView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
+    def get(self, request):
+        try:
+            # 현재 사용자의 구독 상태 확인
+            is_subscribed = request.user.subscription.is_active
+            return Response({"isSubscribed": is_subscribed}, status=200)
+        except UserSubscription.DoesNotExist:
+            # 구독 정보가 없을 경우 false 반환
+            return Response({"isSubscribed": False}, status=200)
+
 class AllInfoView(generics.RetrieveAPIView):
     serializer_class = AllInfoSerializer
     permission_classes = [IsAuthenticated]  # 로그인한 사용자만 접근 가능
@@ -217,6 +229,8 @@ class RecommendScholarshipsView(generics.GenericAPIView):
 
         serializer = self.get_serializer(final_scholarships, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 class RecommendScholarListView(generics.ListAPIView):
     serializer_class = RecommendResultSerializer
