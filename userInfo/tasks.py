@@ -44,7 +44,7 @@ def send_deadline_email():
                 continue
             except Exception as e:
                 # 발송 실패 시 로깅
-                print(f"Error sending email to {recipient}: {e}")
+                print(f"Error sending email: {e}")
 
             
                 
