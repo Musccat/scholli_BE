@@ -6,6 +6,7 @@ from .models import Wishlist
 from scholarships.models import Scholarship
 from userInfo.models import UserSubscription
 from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 @shared_task
