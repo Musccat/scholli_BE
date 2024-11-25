@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 
 
 @shared_task
-def send_deadline_email(email_html, recipient):
+def send_deadline_email():
     two_days_from_now = now() + timedelta(days=2)
     scholarships = Scholarship.objects.filter(recruitment_end=two_days_from_now)
 

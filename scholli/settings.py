@@ -62,7 +62,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'send-deadline-email': {
         'task': 'userInfo.tasks.send_deadline_email',
-        'schedule': crontab(minute=50, hour=17, day_of_month='*', month_of_year='*', day_of_week='*'),
+        'schedule': crontab(minute=53, hour=17, day_of_month='*', month_of_year='*', day_of_week='*'),
     },
 }
 CACHES = {
