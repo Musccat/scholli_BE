@@ -238,8 +238,20 @@ class RecommendScholarListView(generics.ListAPIView):
 
     def get_queryset(self):
         user_profile = Profile.objects.get(user=self.request.user)
+        wishlist_ids = Wishlist.objects.filter(user=self.request.user).values_list('scholarship_id', flat=True)
         #user = user_profile.username
-        return RecommendResult.objects.filter(user=user_profile.user)
+        return RecommendResult.objects.filter(user=user_profile.user).annotate(
+            is_in_wishlist=Case(
+                When(scholarship_id__in=wishlist_ids, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
     
 class RecommendScholarshipsDetail(generics.RetrieveAPIView):
     queryset = Scholarship.objects.all()

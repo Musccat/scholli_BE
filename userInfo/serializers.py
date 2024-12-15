@@ -81,6 +81,7 @@ class RecommendResultSerializer(serializers.ModelSerializer):
     # Scholarship의 전체 정보를 반환하기 위해 scholarship 필드를 UserInfoScholarshipSerializer로 변경
     scholarship = UserInfoScholarshipSerializer(read_only=True)
     product_id = serializers.CharField(source='scholarship.product_id', read_only=True)
+    is_in_wishlist = serializers.BooleanField()  # Annotate된 필드
 
     class Meta:
         model = RecommendResult
