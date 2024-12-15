@@ -61,10 +61,14 @@ class AllInfoSerializer(serializers.ModelSerializer):
 
 class WishlistSerializer(serializers.ModelSerializer):
     scholarship_id = serializers.CharField(source='scholarship.product_id', read_only=True)
+    foundation_name = serializers.CharField(source='scholarship.foundation_name', read_only=True)
+    name = serializers.CharField(source='scholarship.name', read_only=True)
+    recruitment_start = DateField(source= 'scholarship.recruitment_start', read_only=True)
+    recruitment_end = DateField(source= 'scholarship.recruitment_end', read_only=True)
 
     class Meta:
         model = Wishlist
-        fields = ['user', 'scholarship_id', 'added_at']
+        fields = ['user', 'scholarship_id', 'foundation_name', 'name', 'recruitment_start', 'recruitment_end', 'added_at']
         read_only_fields = ['user','added_at']
 
 class UserInfoScholarshipSerializer(serializers.ModelSerializer):
