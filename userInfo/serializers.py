@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import DateField
 from .models import Profile, Wishlist, RecommendResult
 from users.models import User
 from scholarships.models import Scholarship
