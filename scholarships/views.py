@@ -11,8 +11,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 import openai
 from django.conf import settings 
 from .utils import extract_key_points_from_tips  # 공통 유틸리티 함수 불러오기
-from django.db.models import IntegerField
+from django.db.models import IntegerField, Case, When, BooleanField
 from django.db.models.functions import Cast
+from userInfo.models import Wishlist
 
 # 장학금 목록
 class ScholarshipList(generics.ListAPIView):
@@ -24,6 +25,27 @@ class ScholarshipList(generics.ListAPIView):
     filterset_class = ScholarshipFilter  # 필터셋 클래스 설정
     ordering_fields = ['recruitment_start', 'recruitment_end']  
     ordering = ['-recruitment_end'] # 기본 정렬: 모집 종료 최신순
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_anonymous:
+            return Scholarship.objects.annotate(
+                is_in_wishlist=Case(
+                    default=False,
+                    output_field=BooleanField()
+                )
+            )
+
+        wishlist_ids = Wishlist.objects.filter(user=user).values_list('scholarship_id', flat=True)
+
+        return Scholarship.objects.annotate(
+            is_in_wishlist=Case(
+                When(id__in=wishlist_ids, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
 
 # 장학금 상세 정보와 GPT 팁을 반환하는 뷰
 class ScholarshipDetail(generics.RetrieveAPIView):
