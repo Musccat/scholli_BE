@@ -85,4 +85,4 @@ class RecommendResultSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecommendResult
-        fields = ['scholarship', 'product_id', 'recommended_at']
+        fields = ['scholarship', 'product_id', 'recommended_at', 'is_in_wishlist']
