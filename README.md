@@ -8,7 +8,7 @@
 <br>
 <img src="https://github.com/judymoody59/Musccat_Example/assets/108432112/b8bf2704-748e-4b22-9140-5c4692dd2db9" width="250" height="250" />
 <br>
-[웹사이트 url] (https://www.schollli.site/)
+[SCHOLLI 사이트](https://www.schollli.site/)
 
 ## 👩‍💻 팀원
 <table>
