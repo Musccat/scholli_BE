@@ -49,7 +49,7 @@ class ScholarshipList(generics.ListAPIView):
 
 # 장학금 상세 정보와 GPT 팁을 반환하는 뷰
 class ScholarshipDetail(generics.RetrieveAPIView):
-    queryset = Scholarship.objects.all()
+    #queryset = Scholarship.objects.all()
     serializer_class = ScholarshipListSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = 'product_id'
@@ -75,7 +75,7 @@ class ScholarshipDetail(generics.RetrieveAPIView):
 
     def get(self, request, product_id):
         try:
-            scholarship = Scholarship.objects.get(product_id=product_id)
+            scholarship = self.get_queryset().get(product_id=product_id)
         except Scholarship.DoesNotExist:
             return Response({"error": "해당 장학금이 존재하지 않습니다."}, status=status.HTTP_404_NOT_FOUND)
 
