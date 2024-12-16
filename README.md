@@ -4,7 +4,7 @@
 <br>
 
 ## 📍 프로젝트명: SCHOLLI
-
+자신에게 적합한 장학금을 찾는 대학생을 위해 생성형 AI를 이용하여 각 사용자에게 맞는 장학금을 추천하고 이전 수혜자들의 조언을 바탕으로 장학금 수혜 팁을 제공해주는 서비스
 <img src="https://github.com/judymoody59/Musccat_Example/assets/108432112/b8bf2704-748e-4b22-9140-5c4692dd2db9" width="250" height="250" />
 <br>
 
@@ -32,7 +32,7 @@
 
 ## 🛠️ 기술 스택
 
-<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"><img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"><br><img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"><br><img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white"><img src="https://img.shields.io/badge/Celery-37814A?style=for-the-badge&logo=Celery&logoColor=white"><img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white"><img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"><img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"><img src="https://img.shields.io/badge/Gunicorn-499848?style=for-the-badge&logo=Gunicorn&logoColor=white"><br><img src="https://img.shields.io/badge/openai-412991?style=flat&logo=openai&logoColor=white">
+<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"> <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"><br><img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"><br><img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white"> <img src="https://img.shields.io/badge/Celery-37814A?style=for-the-badge&logo=Celery&logoColor=white"> <img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white"> <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"> <img src="https://img.shields.io/badge/Gunicorn-499848?style=for-the-badge&logo=Gunicorn&logoColor=white"><br><img src="https://img.shields.io/badge/openai-412991?style=flat&logo=openai&logoColor=white">
 
 <br/>
 
@@ -72,7 +72,7 @@
  ┃ ┣ 📜utils.py
  ┃ ┣ 📜views.py
  ┃ ┗ 📜__init__.py
- ┣ 📂userInfo                                 # 사용자 프로필 
+ ┣ 📂userInfo                                 # 사용자 프로필 (사용자 상세 정보/추천장학금/마이페이지/관심목록)
  ┃ ┣ 📜admin.py
  ┃ ┣ 📜apps.py
  ┃ ┣ 📜models.py
@@ -119,9 +119,59 @@
 ## ⚙️ 개발환경 설정
 
 #### 백엔드 실행 터미널
-1. 프로젝트 클론
+**1. 프로젝트 클론**
    ```
-   git clone https://github.com/Musccat/scholli_BE
-   cd 
+   git clone https://github.com/Musccat/scholli_BE.git
    ```
-3. 
+**2. 가상환경 설정**
+   ```
+   python -m venv venv
+   .\venv\Scripts\activate
+   ```
+**3. 환경변수 설정**
+   ```
+    # 아임포트 결제 시스템 
+    IMP_KEY = env("IMP_KEY")
+    IMP_SECRET = env("IMP_SECRET")
+    MERCHANT_CODE = env("MERCHANT_CODE")
+    
+    # Celery 설정 
+    CELERY_BROKER_URL =
+    CELERY_RESULT_BACKEND =
+    
+    # OPENAI API 키 
+    OPENAI_API_KEY = env("OPENAI_API_KEY")
+    
+    # 데이터베이스 설정
+    DATABASES = {
+        'default': {
+            'ENGINE': 
+            'NAME': env("DATABASE_NAME"),
+            'USER': env("DATABASE_USER"),
+            'PASSWORD': env("DATABASE_PASSWORD"),
+            'HOST': env("DATABASE_HOST"),
+            'PORT': env("DATABASE_PORT"),
+        }
+    }
+    
+    #JWT 토큰 
+    SIMPLE_JWT = {
+        'ALGORITHM': env("JWT_ALGORITHM"),
+    }
+    
+    # 이메일 
+    EMAIL_HOST_USER = env("EMAIL_HOST")
+    EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
+   ```
+**4. 패키지 설치**
+   ```
+   pip install -r requirements.txt 
+   ```
+**5. 장학금 데이터 불러오기**
+   ```
+   python load_scholarships.py
+   ```
+**6. 실행**
+   ```
+   python manage.py runserver
+   ```
