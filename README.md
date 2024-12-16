@@ -140,7 +140,7 @@
    .\venv\Scripts\activate
    ```
 **3. 환경변수 설정**
-  settings.py/scholli에 해당 내용 입력 
+  <br>settings.py/scholli에 해당 내용 입력 
    ```
     # 아임포트 결제 시스템 
     IMP_KEY = env("IMP_KEY")
