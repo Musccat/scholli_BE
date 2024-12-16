@@ -94,52 +94,7 @@
  ┃ ┣ 📜utils.py
  ┃ ┣ 📜views.py
  ┃ ┗ 📜__init__.py
- ┣ 📂users                                    # 회원가입/로그인에 필요한 사용자 정보 
- ┃ ┣ 📜admin.py
- ┃ ┣ 📜apps.py
- ┃ ┣ 📜forms.py
- ┃ ┣ 📜models.py
- ┃ ┣ 📜serializers.py
- ┃ ┣ 📜tasks.py
- ┃ ┣ 📜tests.py
- ┃ ┣ 📜urls.py
- ┃ ┣ 📜utils.py
- ┃ ┣ 📜views.py
- ┃ ┗ 📜__init__.py
- ┣ 📂scholli                                  # 프로젝트 기본 세팅 
- ┃ ┣ 📜asgi.py
- ┃ ┣ 📜celery.py
- ┃ ┣ 📜settings.py
- ┃ ┣ 📜urls.py
- ┃ ┣ 📜views.py
- ┃ ┣ 📜wsgi.py
- ┃ ┗ 📜__init__.py
- ┣ 📜manage.py                                    
- ┣ 📜load_scholarships.py                     # 장학금 데이터베이스에 불러오기 
- ┣ 📜requirements.txt                         # 패키지 설치 파일 
- ┣ 📜docker-compose.dev.yml                   # 도커 설정 파일
- ┣ 📜docker-compose.yml
- ┣ 📜Dockerfile
- ┣ 📜response5.json                           # 장학금 데이터
- ┣ 📜response6.json
- ┣ 📜response7.json
- ┗ 📜response8.json
-```
-<br/>
-
-## ⚙️ 개발환경 설정
-
-#### 백엔드 실행 터미널
-**1. 프로젝트 클론**
-   ```
-   git clone https://github.com/Musccat/scholli_BE.git
-   ```
-**2. 가상환경 설정**
-   ```
-   python -m venv venv
-   .\venv\Scripts\activate
-   ```
-**3. 환경변수 설정**
+ ┣ 📂users                              력
    ```
     # 아임포트 결제 시스템 
     IMP_KEY = env("IMP_KEY")
