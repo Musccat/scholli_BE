@@ -119,4 +119,9 @@
 ## ⚙️ 개발환경 설정
 
 #### 백엔드 실행 터미널
-
+1. 프로젝트 클론
+   ```
+   git clone https://github.com/Musccat/scholli_BE
+   cd 
+   ```
+3. 
