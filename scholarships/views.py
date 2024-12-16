@@ -18,7 +18,7 @@ from userInfo.models import Wishlist
 # 장학금 목록
 class ScholarshipList(generics.ListAPIView):
     queryset = Scholarship.objects.all()
-    serializer_class = ScholarshipSerializer
+    serializer_class = ScholarshipListSerializer
     permission_classes = [permissions.AllowAny]
     pagination_class = SetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]  # 검색 필터 추가
@@ -50,9 +50,28 @@ class ScholarshipList(generics.ListAPIView):
 # 장학금 상세 정보와 GPT 팁을 반환하는 뷰
 class ScholarshipDetail(generics.RetrieveAPIView):
     queryset = Scholarship.objects.all()
-    serializer_class = ScholarshipSerializer
+    serializer_class = ScholarshipListSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = 'product_id'
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_anonymous:
+            return Scholarship.objects.annotate(
+                is_in_wishlist=Case(
+                    default=False,
+                    output_field=BooleanField()
+                )
+            )
+        wishlist_ids = Wishlist.objects.filter(user=user).values_list('scholarship_id', flat=True)
+        return Scholarship.objects.annotate(
+            is_in_wishlist=Case(
+                When(id__in=wishlist_ids, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
 
     def get(self, request, product_id):
         try:
@@ -63,7 +82,7 @@ class ScholarshipDetail(generics.RetrieveAPIView):
         # 저장된 GPT 팁이 있는 경우
         if scholarship.gpt_success_tips and scholarship.gpt_interview_tips:
             return Response({
-                "scholarship": ScholarshipSerializer(scholarship).data
+                "scholarship": ScholarshipListSerializer(scholarship, context={'request': request}).data
             }, status=status.HTTP_200_OK)
 
         # 저장된 팁이 없는 경우: 리뷰를 기반으로 새로운 팁을 추출
@@ -88,12 +107,12 @@ class ScholarshipDetail(generics.RetrieveAPIView):
             scholarship.save()
 
             return Response({
-                "scholarship": ScholarshipSerializer(scholarship).data
+                "scholarship": ScholarshipListSerializer(scholarship, context={'request': request}).data
             }, status=status.HTTP_200_OK)
         else:
             # 리뷰가 없는 경우
             return Response({
-                "scholarship": ScholarshipSerializer(scholarship).data
+                "scholarship": ScholarshipListSerializer(scholarship, context={'request': request}).data
             }, status=status.HTTP_200_OK)
 
 # 장학금 등록
