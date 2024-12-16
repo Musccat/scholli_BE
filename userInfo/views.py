@@ -14,6 +14,8 @@ from payment.utils import subscription_required
 import openai
 import re
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Case, When, BooleanField
+
 
 def calculate_age(birth_date):
     if birth_date:
