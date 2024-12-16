@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Scholarship
 from reviews.models import Review
-from .serializers import ScholarshipSerializer
+from .serializers import ScholarshipSerializer, ScholarshipListSerializer
 from .pagination import SetPagination
 from .models import Scholarship
 from .filters import ScholarshipFilter
