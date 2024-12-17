@@ -137,7 +137,8 @@
 **2. 가상환경 설정**
    ```
    python -m venv venv
-   .\venv\Scripts\activate
+   .\venv\Scripts\activate     # windows 환경
+   source venv/bin/activate    # macOS 환경 
    ```
 **3. 환경변수 설정**
    <br><br>**3.1 .env 파일 생성**
