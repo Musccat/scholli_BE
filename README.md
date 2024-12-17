@@ -127,6 +127,43 @@
 ```
 <br/>
 
+## 📗 소스코드 설명
+SCHOLLI는 총 7가지의 주요 모듈이 있습니다.<br>
+1) 장학금 목록 조회<br>
+2) 장학금 상세 정보 및 수혜 팁 조회 <br>
+3) 이전 수혜자 조언 등록 및 수정 <br>
+4) 이전 수혜자 조언 조회 <br>
+5) 이전 수혜자들의 조언을 바탕으로 팁 추출 <br>
+6) 사용자 맞춤형 장학금 추천 로직<br>
+7) 추천 장학금 조회 <br>
+<br>
+
+#### 1) 장학금 목록 조회 
+이 모듈은 장학금 목록을 조회할 수 있는 모듈로, 장학금을 검색, 정렬, 필터링하여 보여줍니다. views.py/scholarships에서 ScholarshipList 클래스에서 정의되었으며, Django의 ListAPIView를 사용하여 구현되었습니다. models.py/scholarships에 저장된 scholarship 클래스에서 장학금 정보를 불러옵니다.
+
+#### 2) 장학금 상세 정보 및 수혜 팁 조회
+이 모듈은 장학금 상세 정보와 장학금별 수혜팁을 조회할 수 있는 모듈입니다. views.py/scholarships에서 ScholarshipDetail 클래스에서 정의되었으며, Django의 RetrieveAPIView을 통해 구현되었습니다. get 함수를 통해 models.py/scholarships에 저장된 scholarship 클래스에서 장학금 정보를 불러옵니다.
+
+#### 3) 이전 수혜자 조언 등록 및 수정 
+이 모듈은 수혜 조언을 등록 및 수정할 수 있는 모듈로, 수혜자들이 본인의 조언을 작성할 수 있습니다. views.py/reiviews에서 ReviewDetailView 클래스에서 정의되었으며, Django의 APIView를 통해 구현되었습니다. put 함수를 통해 등록할 수 있고, delete 함수를 통해 삭제할 수 있습니다. 작성한 내용은 models.py/reviews의 review 클래스에 저장됩니다. 
+
+#### 4) 이전 수혜자 조언 조회
+이 모듈은 이전 수혜자들의 조언을 조회할 수 있는 모듈입니다. views.py/reiviews에서 ReviewList 클래스에서 정의되었으며, Django의 APIView를 통해 구현되었습니다. get 함수를 통해 models.py/reviews의 review 클래스에 저장된 조언들의 정보를 불러옵니다. 
+
+#### 5) 이전 수혜자들의 조언을 바탕으로 팁 추출
+이 모듈은 위의 장학금 상세 정보에서 볼 수 있는 수혜팁을 이전 수혜자들의 조언들로부터 추출하기 위한 모듈입니다. utils.py/sholarships에서 정의되었으며, 이전 수혜자들의 조언에서 팁을 추출하는 함수 “extract_key_points_from_tips”로 구현되었습니다. extract_key_points_from_tips 함수에서는 OpenAI API를 통해 수혜 팁 추출 프롬프트가 GPT-4o-mini 모델로 전달됩니다. 
+
+#### 6) 사용자 맞춤형 장학금 추천 로직
+이 모듈은 사용자 맞춤형 장학금을 추천하는 로직을 위한 모듈로, utils.py/userinfo에서 정의되었습니다. OpenAI API를 활용하여 사용자 정보를 기반으로 필터링 및 GPT 프롬프트 엔지니어링을 통해 구현되었습니다. 추천 로직은 다음과 같은 순서로 진행됩니다.<br><br>
+(a) filter_scholarship_by_date 함수를 통해 모집날짜로 필터링을 진행합니다.<br>
+(b) filter_basic 함수를 통해 대학구분, 학년구분, 학과구분에 따라 필터링을 진행합니다.<br>
+(c) separate_scholarships 함수를 통해 '해당없음' 장학금과 그 외 장학금을 분리합니다. <br>
+(d) gpt_filter_region 함수를 통해 (c)에서 분리한 그 외 장학금 (지역기준이 있는 장학금)만 GPT를 통해 필터링합니다.<br>
+(e) recommend_scholarships 함수를 통해 지역 조건을 포함하여 나머지 장학금 기준들도 GPT를 통해 필터링합니다. 
+
+#### 7) 추천 장학금 조회
+이 모듈은 (6)에서 추천 로직을 구현한 utils.py를 불러와 사용자가 입력한 날짜를 바탕으로 추천 결과를 조회할 수 있는 모듈입니다. views.py/userinfo의 RecommendScholarshipsView에서 정의되었으며, Django의 GenericAPIView을 통해 구현되었습니다. post함수를 통해 클라이언트로부터 날짜를 입력받고 utils.py를 통해 추천을 진행합니다. 추천된 장학금 목록 조회는 views.py/userinfo의 RecommendScholarListView에서 정의되었으며 Django의 ListAPIView를 통해 구현되었습니다.
+
 ## ⚙️ 개발환경 설정
 
 #### 백엔드 실행 터미널
