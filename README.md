@@ -140,40 +140,26 @@
    .\venv\Scripts\activate
    ```
 **3. 환경변수 설정**
-  <br>settings.py/scholli에 해당 내용 입력 
+   <br><br>**3.1 .env 파일 생성**
+   <br>    root 폴더 (scholli_BE)에 해당 파일 생성 
+   <br><br> **3.2 .env 파일 내용 작성**
+   <br>    아래 형식에 맞춰 내용 작성 
+   <br> 파일 키는 메일로 교수님께 보내드렸습니다. 
    ```
-    # 아임포트 결제 시스템 
-    IMP_KEY = env("IMP_KEY")
-    IMP_SECRET = env("IMP_SECRET")
-    MERCHANT_CODE = env("MERCHANT_CODE")
-    
-    # Celery 설정 
-    CELERY_BROKER_URL =
-    CELERY_RESULT_BACKEND =
-    
-    # OPENAI API 키 
-    OPENAI_API_KEY = env("OPENAI_API_KEY")
-    
-    # 데이터베이스 설정
-    DATABASES = {
-        'default': {
-            'ENGINE': 
-            'NAME': env("DATABASE_NAME"),
-            'USER': env("DATABASE_USER"),
-            'PASSWORD': env("DATABASE_PASSWORD"),
-            'HOST': env("DATABASE_HOST"),
-            'PORT': env("DATABASE_PORT"),
-        }
-    }
-    
-    #JWT 토큰 
-    SIMPLE_JWT = {
-        'ALGORITHM': env("JWT_ALGORITHM"),
-    }
-    
-    # 이메일 
-    EMAIL_HOST_USER = env("EMAIL_HOST")
-    EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
+    SECRET_KEY=""
+    EMAIL_HOST=""
+    EMAIL_PASSWORD=""
+    JWT_ALGORITHM=""
+    DATABASE_NAME=""
+    DATABASE_USER=""
+    DATABASE_PASSWORD=""
+    DATABASE_HOST=""
+    DATABASE_PORT=
+    IMP_KEY=""
+    IMP_SECRET=""
+    IMP_MERCHANT_CODE="'"
+    MERCHANT_CODE=""
+    OPENAI_API_KEY=""
    ```
 **4. 패키지 설치**
    ```
