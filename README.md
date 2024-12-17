@@ -145,10 +145,10 @@ SCHOLLI는 총 7가지의 주요 모듈이 있습니다.<br>
 이 모듈은 장학금 상세 정보와 장학금별 수혜팁을 조회할 수 있는 모듈입니다. views.py/scholarships에서 ScholarshipDetail 클래스에서 정의되었으며, Django의 RetrieveAPIView을 통해 구현되었습니다. get 함수를 통해 models.py/scholarships에 저장된 scholarship 클래스에서 장학금 정보를 불러옵니다.
 
 #### 3. 이전 수혜자 조언 등록 및 수정 
-이 모듈은 수혜 조언을 등록 및 수정할 수 있는 모듈로, 수혜자들이 본인의 조언을 작성할 수 있습니다. views.py/reiviews에서 ReviewDetailView 클래스에서 정의되었으며, Django의 APIView를 통해 구현되었습니다. put 함수를 통해 등록할 수 있고, delete 함수를 통해 삭제할 수 있습니다. 작성한 내용은 models.py/reviews의 review 클래스에 저장됩니다. 
+이 모듈은 수혜 조언을 등록 및 수정할 수 있는 모듈로, 수혜자들이 본인의 조언을 작성할 수 있습니다. views.py/reviews에서 ReviewDetailView 클래스에서 정의되었으며, Django의 APIView를 통해 구현되었습니다. put 함수를 통해 등록할 수 있고, delete 함수를 통해 삭제할 수 있습니다. 작성한 내용은 models.py/reviews의 review 클래스에 저장됩니다. 
 
 #### 4. 이전 수혜자 조언 조회
-이 모듈은 이전 수혜자들의 조언을 조회할 수 있는 모듈입니다. views.py/reiviews에서 ReviewList 클래스에서 정의되었으며, Django의 APIView를 통해 구현되었습니다. get 함수를 통해 models.py/reviews의 review 클래스에 저장된 조언들의 정보를 불러옵니다. 
+이 모듈은 이전 수혜자들의 조언을 조회할 수 있는 모듈입니다. views.py/reviews에서 ReviewList 클래스에서 정의되었으며, Django의 APIView를 통해 구현되었습니다. get 함수를 통해 models.py/reviews의 review 클래스에 저장된 조언들의 정보를 불러옵니다. 
 
 #### 5. 이전 수혜자들의 조언을 바탕으로 팁 추출
 이 모듈은 위의 장학금 상세 정보에서 볼 수 있는 수혜팁을 이전 수혜자들의 조언들로부터 추출하기 위한 모듈입니다. utils.py/sholarships에서 정의되었으며, 이전 수혜자들의 조언에서 팁을 추출하는 함수 “extract_key_points_from_tips”로 구현되었습니다. extract_key_points_from_tips 함수에서는 OpenAI API를 통해 수혜 팁 추출 프롬프트가 GPT-4o-mini 모델로 전달됩니다. 
