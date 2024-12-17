@@ -164,6 +164,21 @@ SCHOLLI는 총 7가지의 주요 모듈이 있습니다.<br>
 #### 7) 추천 장학금 조회
 이 모듈은 (6)에서 추천 로직을 구현한 utils.py를 불러와 사용자가 입력한 날짜를 바탕으로 추천 결과를 조회할 수 있는 모듈입니다. views.py/userinfo의 RecommendScholarshipsView에서 정의되었으며, Django의 GenericAPIView을 통해 구현되었습니다. post함수를 통해 클라이언트로부터 날짜를 입력받고 utils.py를 통해 추천을 진행합니다. 추천된 장학금 목록 조회는 views.py/userinfo의 RecommendScholarListView에서 정의되었으며 Django의 ListAPIView를 통해 구현되었습니다.
 
+<br/>
+
+## 🗃️ 사용된 오픈 소스 설명
+
+#### 1. OpenAI API
+- **맞춤형 추천 시스템** : OpenAI의 자연어 처리 기술을 활용해 입력된 사용자 정보를 분석하고 장학금 데이터와 매칭해 맞춤형 추천을 제공합니다. <br>
+- **수혜 팁 추출** :  OpenAI의 자연어 처리 기술을 활용해 수혜자들이 작성한 조언을 분석하여 핵심 정보를 요약 및 추출합니다. <br>
+- [공식문서](https://platform.openai.com/docs/overview)
+
+#### 2. 포트원(PortOne)
+- **결제 서비스 구현**: 사용자가 유료 기능을 이용하기 위해 구독을를 결제할 때 안전하고 간편한 결제 환경을 제공합니다.
+- [공식문서](https://developers.portone.io/opi/ko/readme?v=v2&_gl=1*itjk2j*_gcl_aw*R0NMLjE3MzQ0MTYyNjMuQ2owS0NRaUF2UC02QmhEeUFSSXNBSjN1djdhdzNIT3NLYUh4ekw2X2tPRWktXzdhNlJkaGdleEdkRU9iaDNUTlV6VzMzc1JiME5wdFhNVWFBdUlqRUFMd193Y0I.*_gcl_au*NzY4NjE4NDMzLjE3MzQ0MTYyNjI.*_ga*Mjc3MDUzODEyLjE3MzQ0MTYyNjM.*_ga_PD0FDL16NZ*MTczNDQxNjI2Mi4xLjAuMTczNDQxNjI2NC41OC4wLjA)
+
+<br/>
+
 ## ⚙️ 개발환경 설정
 
 #### 백엔드 실행 터미널
