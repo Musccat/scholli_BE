@@ -25,7 +25,7 @@
             <img src="https://avatars.githubusercontent.com/hayong39" alt="Avatar" width="100px"/><br/>
             <a href="https://github.com/hayong39">변하영</a>
             <br/>
-            <img src="https://github-readme-stats.vercel.app/api?username=SeoYeomm&show_icons=true&theme=transparent" alt="Hayeong's GitHub stats" width="350px"/>
+            <img src="https://github-readme-stats.vercel.app/api?username=hayong39&show_icons=true&theme=transparent" alt="Hayeong's GitHub stats" width="350px"/>
         </td>
     </tr>
 </table>
